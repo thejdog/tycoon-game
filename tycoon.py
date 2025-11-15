@@ -164,31 +164,36 @@ while True :
         print(" - End turn. [0]")
         print()
         while validAction == False:
-            print("What would you like to do? [0, 1, 2, 3, 4]")
-            choice = int(input("> "))
 
-            if "get_product1_generator" not in possibleActions and choice == 1:
-                print("You do not have enough money to get a product1 generator.")
-                print()
+            try:
+                print("What would you like to do? [0, 1, 2, 3, 4]")
+                choice = int(input("> "))
 
-            elif "get_product2_generator" not in possibleActions and choice == 2:
-                print("You do not have enough money to get a product2 generator.")
-                print()
+                if "get_product1_generator" not in possibleActions and choice == 1:
+                    print("You do not have enough money to get a product1 generator.")
+                    print()
 
-            elif "get_product3_generator" not in possibleActions and choice == 3:
-                print("You do not have enough money to get a product3 generator.")
-                print()
+                elif "get_product2_generator" not in possibleActions and choice == 2:
+                    print("You do not have enough money to get a product2 generator.")
+                    print()
 
-            elif choice == 0:
-                validAction = True
-                subturn = 4
-                
-            elif choice == 1 or 2 or 3 or 4:
-                
-                validAction = True
+                elif "get_product3_generator" not in possibleActions and choice == 3:
+                    print("You do not have enough money to get a product3 generator.")
+                    print()
 
-            else:
-                print("Please enter either [0, 1, 2, 3, 4].")
+                elif choice == 0:
+                    validAction = True
+                    subturn = 4
+                    
+                elif choice == 1 or 2 or 3 or 4:
+                    
+                    validAction = True
+
+                else:
+                    print("Please enter either [0, 1, 2, 3, 4].")
+
+            except:
+                print("Invalid. Please try again.")
 
 
         if choice == 0:
@@ -236,36 +241,41 @@ while True :
 
             while validChoice == False:
                 print()
-                print("Which would you like to make [1, 2, 3]")
-                productchoice = int(input("> "))
 
-                if productchoice == 1 and "make_product1" in possibleActions:
-                    print("making product...")
-                    time.sleep(3)
-                    print("You now have one more of product1.")
-                    product1 = product1 + 1
-                    validChoice = True
+                try:
+                    print("Which would you like to make [1, 2, 3]")
+                    productchoice = int(input("> "))
 
-                elif productchoice == 2 and "make_product2" in possibleActions:
-                    print("making product...")
-                    time.sleep(3)
-                    print("You now have one more of product2.")
-                    product2 = product2 + 1
-                    validChoice = True
+                    if productchoice == 1 and "make_product1" in possibleActions:
+                        print("making product...")
+                        time.sleep(3)
+                        print("You now have one more of product1.")
+                        product1 = product1 + 1
+                        validChoice = True
 
-                elif productchoice == 3 and "make_product3" in possibleActions:
-                    print("making product...")
-                    time.sleep(3)
-                    print("You now have one more of product3.")
-                    product3 = product3 + 1
-                    validChoice = True
+                    elif productchoice == 2 and "make_product2" in possibleActions:
+                        print("making product...")
+                        time.sleep(3)
+                        print("You now have one more of product2.")
+                        product2 = product2 + 1
+                        validChoice = True
 
-                elif productchoice > 3:
-                    print("Invalid. please enter [1, 2, 3]")
+                    elif productchoice == 3 and "make_product3" in possibleActions:
+                        print("making product...")
+                        time.sleep(3)
+                        print("You now have one more of product3.")
+                        product3 = product3 + 1
+                        validChoice = True
 
-                else:
-                    print("You do not have a generator for this product yet so therefore cannot create one yourself.")
-                    print("Please enter a product you can make.")
+                    elif productchoice > 3:
+                        print("Invalid. please enter [1, 2, 3]")
+
+                    else:
+                        print("You do not have a generator for this product yet so therefore cannot create one yourself.")
+                        print("Please enter a product you can make.")
+                except:
+                    print("Invalid. Please try again.")
+
             choice = 9
             validAction = False
         subturn = subturn + 1
@@ -303,68 +313,71 @@ while True :
         validSellChoice = False
 
         while validSellChoice == False:
-            sellchoice = int(input("> "))
-            # TODO: Handle incorrect input, e.g.:
-            # try / except / exception ValueError etc.
+            print()
 
-            if sellchoice == 1:
+            try:
+                sellchoice = int(input("> "))
 
-                if customers[c] == "product1":
-                    
-                    if product1 >= 1:
-                        product1 = product1 - 1
-                        money = money + 50
-                        print("Money now: ", money)
-                        print()
-                        validSellChoice = True
+                if sellchoice == 1:
 
-                    else:
-                        print("sorry, you do not have enough product1.")
-                        print()
-                        print("Please enter [2, 3]")
-                        print()
+                    if customers[c] == "product1":
+                        
+                        if product1 >= 1:
+                            product1 = product1 - 1
+                            money = money + 50
+                            print("Money now: ", money)
+                            print()
+                            validSellChoice = True
 
-                elif customers[c] == "product2":
+                        else:
+                            print("sorry, you do not have enough product1.")
+                            print()
+                            print("Please enter [2, 3]")
+                            print()
 
-                    if product2 >= 1:
-                        product2 = product2 - 1
-                        money = money + 100
-                        print("Money now: ", money)
-                        print()
-                        validSellChoice = True
+                    elif customers[c] == "product2":
 
-                    else:
-                        print("sorry, you do not have enough product2.")
-                        print()
-                        print("Please enter [2, 3]")
-                        print()
+                        if product2 >= 1:
+                            product2 = product2 - 1
+                            money = money + 100
+                            print("Money now: ", money)
+                            print()
+                            validSellChoice = True
 
-                elif customers[c] == "product3":
+                        else:
+                            print("sorry, you do not have enough product2.")
+                            print()
+                            print("Please enter [2, 3]")
+                            print()
 
-                    if product3 >= 1:
-                        product3 = product3 - 1
-                        money = money + 150
-                        print("Money now: ", money)
-                        print()
-                        validSellChoice = True
+                    elif customers[c] == "product3":
 
-                    else:
-                        print("sorry, you do not have enough product3.")
-                        print()
-                        print("Please enter [2, 3]")
-                        print()
+                        if product3 >= 1:
+                            product3 = product3 - 1
+                            money = money + 150
+                            print("Money now: ", money)
+                            print()
+                            validSellChoice = True
 
-            elif sellchoice == 2:
-                print()
-                validSellChoice = True
+                        else:
+                            print("sorry, you do not have enough product3.")
+                            print()
+                            print("Please enter [2, 3]")
+                            print()
+                elif sellchoice == 2:
+                    print()
+                    validSellChoice = True
 
-            elif sellchoice == 3:
-                print()
-                customers.remove(c)
-                validSellChoice = True
+                elif sellchoice == 3:
+                    print()
+                    customers.remove(c)
+                    validSellChoice = True
 
-            else:
-                print("Invalid. Please enter [1, 2, 3]")
+                else:
+                    print("Invalid. Please enter [1, 2, 3]")
+
+            except:
+                print("Invalid. Please try again.")
 
     if fullturn == 1:
         print()
