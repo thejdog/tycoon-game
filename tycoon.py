@@ -10,16 +10,16 @@ import time
 fullturn = 0
 subturn = 0
 money = 100
-product1 = 0
-product2 = 0
-product3 = 0
-product1Generators = []
-product2Generators = []
-product3Generators = []
+switch = 0
+xbox = 0
+playstation = 0
+switchGenerators = []
+xboxGenerators = []
+playstationGenerators = []
 possibleActions = []
 validAction = False
 possibleCustomerWants = []
-customers = ["product1", "product1"]
+customers = ["switch", "switch"]
 
 
 
@@ -29,43 +29,44 @@ def getPossibleActions():
     global possibleActions, money
     possibleActions.clear()
     if money >= 100:
-        possibleActions.append ("get_product1_generator")
+        possibleActions.append ("get_switch_generator")
 
     if money >= 200:
-        possibleActions.append ("get_product2_generator")
+        possibleActions.append ("get_xbox_generator")
 
     if money >= 300:
-        possibleActions.append ("get_product3_generator")
+        possibleActions.append ("get_playstation_generator")
 
-    if len(product1Generators) >= 1:
-        possibleActions.append ("make_product1")
+    if len(switchGenerators) >= 1:
+        possibleActions.append ("make_switch")
 
-    if len(product2Generators) >= 1:
-        possibleActions.append ("make_product2")
+    if len(xboxGenerators) >= 1:
+        possibleActions.append ("make_xbox")
 
-    if len(product3Generators) >= 1:
-        possibleActions.append ("make_product3")
+    if len(playstationGenerators) >= 1:
+        possibleActions.append ("make_playstation")
+
 
 
 def replaceCustomer():
 
-    if "lvl1" in product1Generators:
-        possibleCustomerWants.append("product1")
+    if "lvl1" in switchGenerators:
+        possibleCustomerWants.append("switch")
     
-    if "lvl1" in product2Generators:
-        possibleCustomerWants.append("product2")
+    if "lvl1" in xboxGenerators:
+        possibleCustomerWants.append("xbox")
     
-    if "lvl1" in product3Generators:
-        possibleCustomerWants.append("product3")
+    if "lvl1" in playstationGenerators:
+        possibleCustomerWants.append("playstation")
     
-    if not "lvl1" in product1Generators or product2Generators or product3Generators:
-        possibleCustomerWants.append("product1")
+    if not "lvl1" in switchGenerators or xboxGenerators or playstationGenerators:
+        possibleCustomerWants.append("switch")
 
 
 #start game loop
 
 print()
-print("Tycoon game v1.05.2")
+print("Tycoon game v1.06.1")
 print()
 print()
 
@@ -78,107 +79,123 @@ while True :
 
     if fullturn == 1:
         print()
-        print("-Tutorial-")
-        print("Before a turn you will be notified of how many customers are waiting and what they want.")
-        print("These ones both want a product1.")
+        print("\033[35m-Tutorial-\033[0m")
+        print("\033[35mBefore a turn you will be notified of how many customers are waiting and what they want.\033[0m")
+        print("\033[35mThese ones both want a switch.\033[0m")
         print()
     
-    print("Customers waiting: ", len(customers), ".")
+    print("\033[31mCustomers waiting: ", len(customers), ".\033[0m")
 
     for c in range(len(customers)):
         print()
-        print("One wants ", customers[c], ".")
+        print("\033[33mOne wants one ", customers[c], ".\033[0m")
 
     print()
-    print("Currently, you have:" )
+    print("\033[34mCurrently, you have:\033[0m")
     print()
-    print(product1, " product1")
-    print(product2, " product2")
-    print(product3, " product3")
+    print("\033[34m", switch, " switch\033[0m")
+    print("\033[34m", xbox, " xbox\033[0m")
+    print("\033[34m", playstation, " playstation\033[0m")
     print()
           
 
     time.sleep(2)
     print()
-    print("----------------------turn begin-----------------------")
+    print("\033[32m----------------------turn begin-----------------------\033[0m")
     print()
     subturn = 1
 
-    for d in range(len(product1Generators)):
-        product1 = product1 + 1
-    for e in range(len(product2Generators)):
-        product2 = product2 + 1
-    for f in range(len(product3Generators)):
-        product3 = product3 + 1
+    for d in range(len(switchGenerators)):
+        switch = switch + 1
+    for e in range(len(xboxGenerators)):
+        xbox = xbox + 1
+    for f in range(len(playstationGenerators)):
+        playstation = playstation + 1
 
     while subturn <= 3:
 
         time.sleep(1)
         print()
-        print("----------------------subturn ", subturn, "------------------------")
+        print("\033[33m----------------------subturn ", subturn, "------------------------\033[0m")
         print()
 
         if fullturn == 1:
             if subturn == 1:
                 print()
-                print("-Tutorial-")
-                print("Once your turn starts, you will then be asked what you want to do.")
-                print("In each turn you will have three 'subturns'. In a subturn, if you wish,")
-                print("you can end your turn even if you have not used all three subturns.")
-                print("This time, buy a product1 generator with your 100 coins.")
+                print("\033[35m-Tutorial-\033[0m")
+                print("\033[35mOnce your turn starts, you will then be asked what you want to do.\033[0m")
+                print("\033[35mIn each turn you will have three 'subturns'. In a subturn, if you wish,\033[0m")
+                print("\033[35myou can end your turn even if you have not used all three subturns.\033[0m")
+                print("\033[35mThis time, buy a switch generator with your 100 coins\033[0m")
                 print()
             elif subturn == 2:
                 print()
-                print("-Tutorial-")
-                print("Now make a product by hand.")
+                print("\033[35m-Tutorial-\033[0m")
+                print("\033[35mNow make a product by hand.\033[0m")
                 print()
             elif subturn == 3:
                 print()
-                print("-Tutorial-")
-                print("Once again make a product by hand.")
+                print("\033[35m-Tutorial-\033[0m")
+                print("\033[35mOnce again make a product by hand.\033[0m")
                 print()
 
-        print("Your money is: ", money, ".")
+        print("\033[34mYour money is: ", money, ".\033[0m")
         print()
-        print("In this turn you can:")
+        print("\033[34mIn this turn you can:\033[0m")
         print()
         getPossibleActions()
-        if "get_product1_generator" in possibleActions:
+        if "get_switch_generator" in possibleActions:
             print()
-            print(" - Get a product1 generator [1]")
+            print("\033[32m - Get a switch generator [1]\033[0m")
+        
+        else:
+            print()
+            print("\033[31m - Get a switch generator [too expensive]\033[0m")
 
-        if "get_product2_generator" in possibleActions:
+        if "get_xbox_generator" in possibleActions:
             print()
-            print(" - Get a product2 generator [2]")
+            print("\033[32m - Get an xbox generator [2]\033[0m")
+        
+        else:
+            print()
+            print("\033[31m - Get an xbox generator [too expensive]\033[0m")
 
-        if "get_product3_generator" in possibleActions:
+        if "get_playstation_generator" in possibleActions:
             print()
-            print(" - Get a product3 generator [3]")
+            print("\033[32m - Get a playstation generator [3]\033[0m")
+        
+        else:
+            print()
+            print("\033[31m - Get a playstation generator [too expensive]\033[0m")
 
-        if "make_product1" or "make_product2" or "make_product3" in possibleActions:
+        if ("make_switch" or "make_xbox" or "make_playstation") in possibleActions:
             print()
-            print(" - make a product by hand [4]")
+            print("\033[32m - Make a product by hand [4]\033[0m")
+        
+        else:
+            print()
+            print("\033[31m - Make a product by hand [requires generators]\033[0m")
 
 
         print()
-        print(" - End turn. [0]")
+        print("\033[33m - End turn. [0]\033[0m")
         print()
         while validAction == False:
 
             try:
-                print("What would you like to do? [0, 1, 2, 3, 4]")
-                choice = int(input("> "))
+                print("\033[36mWhat would you like to do? [0, 1, 2, 3, 4]\033[0m")
+                choice = int(input("\033[36m> "))
 
-                if "get_product1_generator" not in possibleActions and choice == 1:
-                    print("You do not have enough money to get a product1 generator.")
+                if "get_switch_generator" not in possibleActions and choice == 1:
+                    print("\033[31mYou do not have enough money to get a switch generator.\033[0m")
                     print()
 
-                elif "get_product2_generator" not in possibleActions and choice == 2:
-                    print("You do not have enough money to get a product2 generator.")
+                elif "get_xbox_generator" not in possibleActions and choice == 2:
+                    print("\033[31mYou do not have enough money to get an xbox generator.\033[0m")
                     print()
 
-                elif "get_product3_generator" not in possibleActions and choice == 3:
-                    print("You do not have enough money to get a product3 generator.")
+                elif "get_playstation_generator" not in possibleActions and choice == 3:
+                    print("\033[31mYou do not have enough money to get a playstation generator.\033[0m")
                     print()
 
                 elif choice == 0:
@@ -190,10 +207,10 @@ while True :
                     validAction = True
 
                 else:
-                    print("Please enter either [0, 1, 2, 3, 4].")
+                    print("\033[31mPlease enter either [0, 1, 2, 3, 4].\033[0m")
 
             except:
-                print("Invalid. Please try again.")
+                print("\033[31mInvalid. Please try again.\033[0m")
 
 
         if choice == 0:
@@ -202,19 +219,19 @@ while True :
             validAction = False
 
         elif choice == 1:
-            product1Generators.append ("lvl1")
+            switchGenerators.append ("lvl1")
             money = money - 100
             choice = 9
             validAction = False
 
         elif choice == 2:
-            product2Generators.append ("lvl1")
+            xboxGenerators.append ("lvl1")
             money = money - 200
             choice = 9
             validAction = False
 
         elif choice == 3:
-            product3Generators.append ("lvl1")
+            playstationGenerators.append ("lvl1")
             money = money - 300
             choice = 9
             validAction = False
@@ -223,19 +240,28 @@ while True :
 
             if fullturn == 1:
                 print()
-                print("-Tutorial-")
-                print("Make a product1.")
+                print("\033[35m-Tutorial-\033[0m")
+                print("\033[35mMake a switch.\033[0m")
                 print()
 
-            print("You can make:")
-            if "make_product1" in possibleActions:
-                print(" - One of product1 [1]")
+            print("\033[34mYou can make:\033[0m")
+            if "make_switch" in possibleActions:
+                print("\033[32m - One switch [1]\033[0m")
+            
+            else:
+                print("\033[31m - switch [requires generators]\033[0m")
 
-            if "make_product2" in possibleActions:
-                print(" - One of product2 [2]")
+            if "make_xbox" in possibleActions:
+                print("\033[32m - One xbox [2]\033[0m")
 
-            if "make_product3" in possibleActions:
-                print(" - One of product3 [3]")
+            else:
+                print("\033[31m - xbox [requires generators]\033[0m")
+
+            if "make_playstation" in possibleActions:
+                print("\033[32m - One playstation [3]\033[0m")
+            
+            else:
+                print("\033[31m - playstation [requires generators]\033[0m")
 
             validChoice = False
 
@@ -243,38 +269,38 @@ while True :
                 print()
 
                 try:
-                    print("Which would you like to make [1, 2, 3]")
-                    productchoice = int(input("> "))
+                    print("\033[36mWhich would you like to make [1, 2, 3]\033[0m")
+                    productchoice = int(input("\033[36m> "))
 
-                    if productchoice == 1 and "make_product1" in possibleActions:
-                        print("making product...")
+                    if productchoice == 1 and "make_switch" in possibleActions:
+                        print("\033[33mmaking product...\033[0m")
                         time.sleep(3)
-                        print("You now have one more of product1.")
-                        product1 = product1 + 1
+                        print("\033[32mYou now have one more switch\033[0m")
+                        switch = switch + 1
                         validChoice = True
 
-                    elif productchoice == 2 and "make_product2" in possibleActions:
-                        print("making product...")
+                    elif productchoice == 2 and "make_xbox" in possibleActions:
+                        print("\033[33mmaking product...\033[0m")
                         time.sleep(3)
-                        print("You now have one more of product2.")
-                        product2 = product2 + 1
+                        print("\033[32mYou now have one more xbox.\033[0m")
+                        xbox = xbox + 1
                         validChoice = True
 
-                    elif productchoice == 3 and "make_product3" in possibleActions:
-                        print("making product...")
+                    elif productchoice == 3 and "make_playstation" in possibleActions:
+                        print("\033[33mmaking product...\033[0m")
                         time.sleep(3)
-                        print("You now have one more of product3.")
-                        product3 = product3 + 1
+                        print("\033[32mYou now have one more playstation.\033[0m")
+                        playstation = playstation + 1
                         validChoice = True
 
                     elif productchoice > 3:
-                        print("Invalid. please enter [1, 2, 3]")
+                        print("\033[31mInvalid. please enter [1, 2, 3]\033[0m")
 
                     else:
-                        print("You do not have a generator for this product yet so therefore cannot create one yourself.")
+                        print("\033[31mYou do not have a generator for this product yet so therefore cannot create one yourself.\033[0m")
                         print("Please enter a product you can make.")
                 except:
-                    print("Invalid. Please try again.")
+                    print("\033[31mInvalid. Please try again.\033[0m")
 
             choice = 9
             validAction = False
@@ -283,86 +309,91 @@ while True :
             
     print()
     time.sleep(1)
-    print("-----------------------turn end------------------------")
+    print("\033[31m-----------------------turn end------------------------\033[0m")
     time.sleep(2)
 
     if fullturn == 1:
         print()
-        print("-Tutorial-")
-        print("After a turn you can then sell your made products to waiting customers.")
-        print("Sell both of your product1 to these customers.")
+        print("\033[35m-Tutorial-\033[0m")
+        print("\033[35mAfter a turn you can then sell your made products to waiting customers.\033[0m")
+        print("\033[35mSell both of your switches to these customers.\033[0m")
         print()
 
     print()
-    print("Time to sell products:")
+    print("\033[34mTime to sell products:\033[0m")
     print()
-    print("You have: ")
+    print("\033[34mYou have:\033[0m")
     print()
-    print(" - ", product1, " of product1")
-    print(" - ", product2, " of product2")
-    print(" - ", product3, " of product3")
+    print("\033[34m - ", switch, " switch(es)\033[0m")
+    print("\033[34m - ", xbox, " xbox(es)\033[0m")
+    print("\033[34m - ", playstation, " playstation(s)\033[0m")
 
     for g in range(len(customers)):
         print()
-        print("One customer wants a ", customers[c])
-        print("What would you like to do?")
+        print("\033[34mOne customer wants one ", customers[c], "\033[0m")
+        print("\033[36mWhat would you like to do?\033[0m")
         print()
-        print(" - sell a ", customers[c], " to them [1]")
-        print(" - do not sell to them yet [2]")
-        print(" - dismiss them from the shop without serving them [3]")
+
+        if len(switchGenerators) >=1:
+            print("\033[32m - sell one ", customers[c], " to them [1]\033[0m")
+        
+        else:
+            print("\033[31m - sell one ", customers[c], " to them\033[0m")
+        print("\033[33m - do not sell to them yet [2]\033[0m")
+        print("\033[33m - dismiss them from the shop without serving them [3]\033[0m")
         validSellChoice = False
 
         while validSellChoice == False:
             print()
 
             try:
-                sellchoice = int(input("> "))
+                sellchoice = int(input("\033[36m> "))
 
                 if sellchoice == 1:
 
-                    if customers[c] == "product1":
+                    if customers[c] == "switch":
                         
-                        if product1 >= 1:
-                            product1 = product1 - 1
+                        if switch >= 1:
+                            switch = switch - 1
                             money = money + 50
-                            print("Money now: ", money)
+                            print("\033[33mMoney now: ", money, "\033[0m")
                             print()
                             validSellChoice = True
 
                         else:
-                            print("sorry, you do not have enough product1.")
+                            print("\033[31mSorry, you do not have enough switches.\033[0m")
                             print()
-                            print("Please enter [2, 3]")
+                            print("\033[31mPlease enter [2, 3]\033[0m")
                             print()
 
-                    elif customers[c] == "product2":
+                    elif customers[c] == "xbox":
 
-                        if product2 >= 1:
-                            product2 = product2 - 1
+                        if xbox >= 1:
+                            xbox = xbox - 1
                             money = money + 100
-                            print("Money now: ", money)
+                            print("\033[33mMoney now: ", money, "\033[0m")
                             print()
                             validSellChoice = True
 
                         else:
-                            print("sorry, you do not have enough product2.")
+                            print("\033[31mSorry, you do not have enough xboxes.\033[0m")
                             print()
-                            print("Please enter [2, 3]")
+                            print("\033[31mPlease enter [2, 3]\033[0m")
                             print()
 
-                    elif customers[c] == "product3":
+                    elif customers[c] == "playstation":
 
-                        if product3 >= 1:
-                            product3 = product3 - 1
+                        if playstation >= 1:
+                            playstation = playstation - 1
                             money = money + 150
-                            print("Money now: ", money)
+                            print("\033[33mMoney now: ", money, "\033[0m")
                             print()
                             validSellChoice = True
 
                         else:
-                            print("sorry, you do not have enough product3.")
+                            print("\033[31mSorry, you do not have enough playstations.\033[0m")
                             print()
-                            print("Please enter [2, 3]")
+                            print("\033[31mPlease enter [2, 3\033[0m")
                             print()
                 elif sellchoice == 2:
                     print()
@@ -374,21 +405,21 @@ while True :
                     validSellChoice = True
 
                 else:
-                    print("Invalid. Please enter [1, 2, 3]")
+                    print("\033[31mInvalid. Please enter [1, 2, 3]\033[0m")
 
             except:
-                print("Invalid. Please try again.")
+                print("\033[31mInvalid. Please try again.\033[0m")
 
     if fullturn == 1:
         print()
-        print("-Tutorial-")
-        print("Congratulations! you have now completed the tutorial!")
-        print("Enjoy my game! :)")
+        print("\033[35m-Tutorial-\033[0m")
+        print("\033[35mCongratulations! You have now completed the tutorial!\033[0m")
+        print("\033[35mEnjoy my game! :)\033[0m")
         print()
 
     print()
     print()
-    print("-------------------------------------------------------")
+    print("\033[33m-------------------------------------------------------\033[0m")
     time.sleep(4)
     print()
     print()
