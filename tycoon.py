@@ -50,17 +50,18 @@ def getPossibleActions():
 
 def replaceCustomer():
 
-    if "lvl1" in switchGenerators:
+    if "1" in switchGenerators:
         possibleCustomerWants.append("switch")
     
-    if "lvl1" in xboxGenerators:
+    if "1" in xboxGenerators:
         possibleCustomerWants.append("xbox")
     
-    if "lvl1" in playstationGenerators:
+    if "1" in playstationGenerators:
         possibleCustomerWants.append("playstation")
     
-    if not "lvl1" in switchGenerators or xboxGenerators or playstationGenerators:
+    if not "1" in switchGenerators or xboxGenerators or playstationGenerators:
         possibleCustomerWants.append("switch")
+    customers.append(possibleCustomerWants[random.randint(0, len(possibleCustomerWants) - 1)])
 
 
 #start game loop
@@ -146,39 +147,39 @@ while True :
         getPossibleActions()
         if "get_switch_generator" in possibleActions:
             print()
-            print("\033[32m - Get a switch generator [1]\033[0m")
+            print("\033[32m - Get a switch generator - 100c [1]\033[0m")
         
         else:
             print()
-            print("\033[31m - Get a switch generator [too expensive]\033[0m")
+            print("\033[31m - Get a switch generator - 100c [too expensive]\033[0m")
 
         if "get_xbox_generator" in possibleActions:
             print()
-            print("\033[32m - Get an xbox generator [2]\033[0m")
+            print("\033[32m - Get an xbox generator - 200c [2]\033[0m")
         
         else:
             print()
-            print("\033[31m - Get an xbox generator [too expensive]\033[0m")
+            print("\033[31m - Get an xbox generator - 200c [too expensive]\033[0m")
 
         if "get_playstation_generator" in possibleActions:
             print()
-            print("\033[32m - Get a playstation generator [3]\033[0m")
+            print("\033[32m - Get a playstation generator - 300c [3]\033[0m")
         
         else:
             print()
-            print("\033[31m - Get a playstation generator [too expensive]\033[0m")
+            print("\033[31m - Get a playstation generator - 300c [too expensive]\033[0m")
 
         if ("make_switch" or "make_xbox" or "make_playstation") in possibleActions:
             print()
-            print("\033[32m - Make a product by hand [4]\033[0m")
+            print("\033[32m - Make a product by hand - 0c [4]\033[0m")
         
         else:
             print()
-            print("\033[31m - Make a product by hand [requires generators]\033[0m")
+            print("\033[31m - Make a product by hand - 10c [requires generators]\033[0m")
 
 
         print()
-        print("\033[33m - End turn. [0]\033[0m")
+        print("\033[33m - End turn. - 0c[0]\033[0m")
         print()
         while validAction == False:
 
@@ -219,19 +220,19 @@ while True :
             validAction = False
 
         elif choice == 1:
-            switchGenerators.append ("lvl1")
+            switchGenerators.append ("1")
             money = money - 100
             choice = 9
             validAction = False
 
         elif choice == 2:
-            xboxGenerators.append ("lvl1")
+            xboxGenerators.append ("1")
             money = money - 200
             choice = 9
             validAction = False
 
         elif choice == 3:
-            playstationGenerators.append ("lvl1")
+            playstationGenerators.append ("1")
             money = money - 300
             choice = 9
             validAction = False
@@ -328,17 +329,17 @@ while True :
     print("\033[34m - ", xbox, " xbox(es)\033[0m")
     print("\033[34m - ", playstation, " playstation(s)\033[0m")
 
-    for g in range(len(customers)):
+    for c in range(len(customers)):
         print()
-        print("\033[34mOne customer wants one ", customers[c], "\033[0m")
+        print("\033[34mOne customer wants one ", customers[0], "\033[0m")
         print("\033[36mWhat would you like to do?\033[0m")
         print()
 
         if len(switchGenerators) >=1:
-            print("\033[32m - sell one ", customers[c], " to them [1]\033[0m")
+            print("\033[32m - sell one ", customers[0], " to them [1]\033[0m")
         
         else:
-            print("\033[31m - sell one ", customers[c], " to them\033[0m")
+            print("\033[31m - sell one ", customers[0], " to them\033[0m")
         print("\033[33m - do not sell to them yet [2]\033[0m")
         print("\033[33m - dismiss them from the shop without serving them [3]\033[0m")
         validSellChoice = False
@@ -351,7 +352,7 @@ while True :
 
                 if sellchoice == 1:
 
-                    if customers[c] == "switch":
+                    if customers[0] == "switch":
                         
                         if switch >= 1:
                             switch = switch - 1
@@ -359,6 +360,7 @@ while True :
                             print("\033[33mMoney now: ", money, "\033[0m")
                             print()
                             validSellChoice = True
+                            customers.remove("switch")
 
                         else:
                             print("\033[31mSorry, you do not have enough switches.\033[0m")
@@ -366,7 +368,7 @@ while True :
                             print("\033[31mPlease enter [2, 3]\033[0m")
                             print()
 
-                    elif customers[c] == "xbox":
+                    elif customers[0] == "xbox":
 
                         if xbox >= 1:
                             xbox = xbox - 1
@@ -374,6 +376,7 @@ while True :
                             print("\033[33mMoney now: ", money, "\033[0m")
                             print()
                             validSellChoice = True
+                            customers.remove("xbox")
 
                         else:
                             print("\033[31mSorry, you do not have enough xboxes.\033[0m")
@@ -381,7 +384,7 @@ while True :
                             print("\033[31mPlease enter [2, 3]\033[0m")
                             print()
 
-                    elif customers[c] == "playstation":
+                    elif customers[0] == "playstation":
 
                         if playstation >= 1:
                             playstation = playstation - 1
@@ -389,6 +392,7 @@ while True :
                             print("\033[33mMoney now: ", money, "\033[0m")
                             print()
                             validSellChoice = True
+                            customers.remove("playstation")
 
                         else:
                             print("\033[31mSorry, you do not have enough playstations.\033[0m")
@@ -401,7 +405,7 @@ while True :
 
                 elif sellchoice == 3:
                     print()
-                    customers.remove(c)
+                    customers.remove(customers[0])
                     validSellChoice = True
 
                 else:
