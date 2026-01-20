@@ -10,9 +10,14 @@ import time
 fullturn = 0
 subturn = 0
 money = 100
+orig_money = 0
+orig_sale_money = 0
 switch = 0
 xbox = 0
 playstation = 0
+orig_playstations = 0
+orig_switches = 0
+orig_xboxes = 0
 switchGenerators = []
 xboxGenerators = []
 playstationGenerators = []
@@ -20,6 +25,7 @@ possibleActions = []
 validAction = False
 possibleCustomerWants = []
 customers = ["switch", "switch"]
+customers_this_turn = 2
 
 
 
@@ -72,10 +78,15 @@ print()
 print()
 
 while True :
+    customers_this_turn = 2 + fullturn // 5
     fullturn = fullturn + 1
+    orig_switches = switch
+    orig_xboxes = xbox
+    orig_playstations = playstation
+    orig_money = money
     subturn = 0
     if len(customers) <2:
-        for b in range(2 - len(customers)):
+        for b in range(customers_this_turn - len(customers)):
             replaceCustomer()
 
     if fullturn == 1:
@@ -90,14 +101,26 @@ while True :
     for c in range(len(customers)):
         print()
         print("\033[33mOne wants one ", customers[c], ".\033[0m")
+    
+    for d in range(len(switchGenerators)):
+        switch = switch + 1
+    for e in range(len(xboxGenerators)):
+        xbox = xbox + 1
+    for f in range(len(playstationGenerators)):
+        playstation = playstation + 1
 
     print()
     print("\033[34mCurrently, you have:\033[0m")
     print()
-    print("\033[34m", switch, " switch\033[0m")
-    print("\033[34m", xbox, " xbox\033[0m")
-    print("\033[34m", playstation, " playstation\033[0m")
+    print("\033[34m", switch, " switch(es)\033[0m")
+    print("\033[34m", xbox, " xbox(es)\033[0m")
+    print("\033[34m", playstation, " playstation(s)\033[0m")
     print()
+    print("\033[34mCurrently, the generators you have are:")
+    print(len(switchGenerators), " switch generator(s)")
+    print(len(xboxGenerators), " xbox generator(s)")
+    print(len(playstationGenerators), " playstation generator(s)")
+    print("\033[0m")
           
 
     time.sleep(2)
@@ -105,13 +128,6 @@ while True :
     print("\033[32m----------------------turn begin-----------------------\033[0m")
     print()
     subturn = 1
-
-    for d in range(len(switchGenerators)):
-        switch = switch + 1
-    for e in range(len(xboxGenerators)):
-        xbox = xbox + 1
-    for f in range(len(playstationGenerators)):
-        playstation = playstation + 1
 
     while subturn <= 3:
 
@@ -175,7 +191,7 @@ while True :
         
         else:
             print()
-            print("\033[31m - Make a product by hand - 10c [requires generators]\033[0m")
+            print("\033[31m - Make a product by hand - 0c [requires generators]\033[0m")
 
 
         print()
@@ -199,11 +215,12 @@ while True :
                     print("\033[31mYou do not have enough money to get a playstation generator.\033[0m")
                     print()
 
-                elif choice == 0:
-                    validAction = True
-                    subturn = 4
+                elif "make_playstation" not in possibleActions and "make_switch" not in possibleActions and "make_xbox" not in possibleActions and choice == 4:
+                    print("\033[31mYou do not have any types of generators and therefore do not")
+                    print("have the blueprints to build one yourself.\033[0m")
+                    print()
                     
-                elif choice == 1 or 2 or 3 or 4:
+                elif choice in [0, 1, 2, 3, 4]:
                     
                     validAction = True
 
@@ -218,6 +235,7 @@ while True :
             print()
             choice = 9
             validAction = False
+            subturn = 4
 
         elif choice == 1:
             switchGenerators.append ("1")
@@ -329,6 +347,8 @@ while True :
     print("\033[34m - ", xbox, " xbox(es)\033[0m")
     print("\033[34m - ", playstation, " playstation(s)\033[0m")
 
+    orig_sale_money = money
+
     for c in range(len(customers)):
         print()
         print("\033[34mOne customer wants one ", customers[0], "\033[0m")
@@ -336,10 +356,11 @@ while True :
         print()
 
         if len(switchGenerators) >=1:
-            print("\033[32m - sell one ", customers[0], " to them [1]\033[0m")
+            print("\033[32m - sell one ", customers[0], " to them - 1", customers[0], " [1]\033[0m")
         
         else:
-            print("\033[31m - sell one ", customers[0], " to them\033[0m")
+            print("\033[31m - sell one ", customers[0], " to them  - no ", customers[0], "(e)s [-]\033[0m")
+
         print("\033[33m - do not sell to them yet [2]\033[0m")
         print("\033[33m - dismiss them from the shop without serving them [3]\033[0m")
         validSellChoice = False
@@ -357,7 +378,7 @@ while True :
                         if switch >= 1:
                             switch = switch - 1
                             money = money + 50
-                            print("\033[33mMoney now: ", money, "\033[0m")
+                            print("\033[33mMoney now: ", money, "c\033[0m")
                             print()
                             validSellChoice = True
                             customers.remove("switch")
@@ -373,7 +394,7 @@ while True :
                         if xbox >= 1:
                             xbox = xbox - 1
                             money = money + 100
-                            print("\033[33mMoney now: ", money, "\033[0m")
+                            print("\033[33mMoney now: ", money, "c\033[0m")
                             print()
                             validSellChoice = True
                             customers.remove("xbox")
@@ -389,7 +410,7 @@ while True :
                         if playstation >= 1:
                             playstation = playstation - 1
                             money = money + 150
-                            print("\033[33mMoney now: ", money, "\033[0m")
+                            print("\033[33mMoney now: ", money, "c\033[0m")
                             print()
                             validSellChoice = True
                             customers.remove("playstation")
@@ -420,6 +441,25 @@ while True :
         print("\033[35mCongratulations! You have now completed the tutorial!\033[0m")
         print("\033[35mEnjoy my game! :)\033[0m")
         print()
+
+    print()
+    print()
+    print("\033[33m-------------------------------------------------------\033[0m")
+    time.sleep(2)
+    print()
+    print()
+    print("Turn ", fullturn, " summary:")
+    print("+", switch - orig_switches, " switch(es)")
+    print("+", xbox - orig_xboxes, " xbox(es)")
+    print("+", playstation - orig_playstations, " playstation(s)")
+    print("-", orig_money - orig_sale_money, " spent")
+    print("+", money - orig_sale_money, " sales")
+
+    if money - orig_money >= 0:
+        print("+", money - orig_money, " overall profit")
+
+    else:
+        print(money - orig_money, " overall profit.")
 
     print()
     print()
