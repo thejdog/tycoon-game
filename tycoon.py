@@ -400,7 +400,7 @@ customers = [createCustomer("normal"), createCustomer("normal")]
 #---------------------------------------start game loop--------------------------------------------------
 
 print()
-print(CYAN+"Tycoon game V26.08.04"+RESET)
+print(CYAN+"Tycoon game V26.08.05"+RESET)
 print()
 print()
 print(BLUE+"-Tutorial-"+RESET)
@@ -474,7 +474,7 @@ while not game_won:
 
     print()
 
-    if fullturn % 3 == 1:
+    if fullturn % 3 == 1 and not fullturn == 1:
         switch_price = switch_price + random.randint(-10,10)
         xbox_price = xbox_price + random.randint(-10,10)
         playstation_price = playstation_price + random.randint(-10,10)
