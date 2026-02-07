@@ -42,6 +42,10 @@ BLUE = "\033[34m"
 MAGENTA = "\033[35m"
 CYAN = "\033[36m"
 DEFAULT = "\033[39m"
+BRONZE = "\033[38;5;130m"
+SILVER = "\e[0;90m"
+GOLD = "\033[38;5;178m"
+PLATINUM = "\033[38;2;229;228;226m"
 
 
 #some vars:
@@ -67,13 +71,16 @@ playstationGenerators = []
 
 possibleActions = []
 validAction = False
+
 possibleCustomerWants = []
 customers_this_turn = 2
+vip_served = 0
+non_vip_served = 0
 
 switch_price = 50
 xbox_price = 100
-
 playstation_price = 150
+
 switch_maintainance = 5
 xbox_maintainance = 10
 playstation_maintainance = 15
@@ -85,6 +92,7 @@ event_turns_left = 0
 shop_staff = 2
 staff_base_cost = 50
 manufacturing_staff = 0
+staff = shop_staff
 manufacturing_base_cost = 50
 marketing_staff = 0
 marketing_base_cost = 75
@@ -95,6 +103,16 @@ xbox_min = 50
 xbox_max = 160
 playstation_min = 100
 playstation_max = 215
+
+GOAL_COST = 2000
+GOAL_NAME = "Platinum Superstore Trophy"
+game_won = False
+awards = {
+    "bronze": False,
+    "silver": False,
+    "gold": False,
+    "platinum": False
+}
 
 #------------------------------------------------subroutines----------------------------------------------
 
@@ -289,6 +307,80 @@ def getMarketingStaffCost():
         return 150 * marketing_staff
 
 
+
+def canBuyGoal():
+    return (
+        money >= GOAL_COST and
+        vip_served >= 5 and
+        non_vip_served >= 20 and
+        len(switchGenerators) >= 1 and
+        len(xboxGenerators) >= 1 and
+        len(playstationGenerators) >= 1 and
+        shop_staff >= 4 and
+        manufacturing_staff >= 1 and
+        marketing_staff >= 1 and
+        reputation >= 75
+    )
+
+def canBuyBronze():
+    return (
+        money >= 300 and
+        reputation >= 55 and
+        vip_served >= 2
+    )
+
+def canBuySilver():
+    return (
+        money >= 800 and
+        reputation >= 65 and
+        vip_served >= 2 and
+        staff >= 2
+    )
+
+def canBuyGold():
+    return (
+        money >= 1400 and
+        reputation >= 70 and
+        vip_served >= 3 and
+        shop_staff >= 3 and
+        manufacturing_staff >= 1 and
+        marketing_staff >= 1
+    )
+
+def canBuyPlatinum():
+    return canBuyGoal()
+
+def canBuyAward():
+    if canBuyBronze == True:
+        return canBuyBronze
+    elif canBuySilver == True:
+        return canBuySilver
+    elif canBuyGold == True:
+        return canBuyGold
+    elif canBuyPlatinum == True:
+        return canBuyPlatinum
+    else:
+        return False
+
+def applyAwardBuff(tier):
+    global reputation, shop_staff
+
+    if tier == "bronze":
+        reputation += 5
+
+    elif tier == "silver":
+        reputation += 10
+        shop_staff += 1
+
+    elif tier == "gold":
+        reputation += 15
+        marketing_staff += 1
+
+    clampReputation()
+
+
+
+
 #other vars
 
 customers = [createCustomer("normal"), createCustomer("normal")]
@@ -298,11 +390,16 @@ customers = [createCustomer("normal"), createCustomer("normal")]
 #---------------------------------------start game loop--------------------------------------------------
 
 print()
-print(CYAN+"Tycoon game v1.06.1"+RESET)
+print(CYAN+"Tycoon game V26.06.2"+RESET)
 print()
+print()
+print(MAGENTA+"-Tutorial-"+RESET)
+print(MAGENTA+"Welcome to my tycoon game!"+RESET)
+print(MAGENTA+"I'll be teaching you how to play for your first turn!"+RESET)
+print(MAGENTA+"Now, without further ado lets get going! :)"+RESET)
 print()
 
-while True :
+while not game_won:
     #before turn setup:
     if fullturn % 5 == 3:
         customers_this_turn = customers_this_turn + 1
@@ -347,6 +444,8 @@ while True :
             active_event = "journalist"
             event_turns_left = random.randint(3, 4)
             print(YELLOW+" 🗞️ A jouralist enters the shop. They will interview your customers. 🗞️"+RESET)
+        
+        print()
 
     orig_switches = switch
     orig_xboxes = xbox
@@ -359,9 +458,11 @@ while True :
         print()
         if generators_active:
             print(YELLOW+"⚠ Maintenance is due tomorrow. Make sure you have enough money! ⚠"+RESET)
+            
         else:
             print(RED+"⚠ Maintenance is due tomorrow, and your generators are already offline! ⚠"+RESET)
 
+    print()
 
     if fullturn % 3 == 1:
         switch_price = switch_price + random.randint(-10,10)
@@ -410,6 +511,7 @@ while True :
             generators_active = False
             print(RED+"⚠You cannot afford to pay the maintenance fee!⚠"+RESET)
             print(RED+"⚠Generators will shut down until the payment is made.⚠"+RESET)
+            print()
 
     #----------------------before turn stuff------------------------
 
@@ -432,11 +534,12 @@ while True :
     
     print(YELLOW+"Customers waiting: ", len(customers), "." +RESET)
 
-    for customer in customers:
+    for i, customer in enumerate(customers):
+        row_color = DEFAULT if i % 2 == 0 else CYAN
         amount = customer.get("amount", 1)
         print()
         print(
-            DEFAULT+ customer['name'], " (",
+            row_color+" - ", i, customer['name'], " (",
             customer['type'], ") wants",
             amount, customer['want'], "((e)s).",
             "They will wait ", customer['patience'], " more turns."+RESET)
@@ -510,33 +613,46 @@ while True :
         print()
         print(BLUE+" [1] Buy generators"+RESET)
         print(BLUE+" [2] Hand crafting"+RESET)
-        print(BLUE+" [3] Staff management"+RESET)
+        if canBuyBronze():
+            print(BRONZE+" [3] Staff management"+RESET)
+        elif canBuySilver():
+            print(SILVER+" [3] Staff management"+RESET)
+        elif canBuyGold():
+            print(GOLD+" [3] Staff management"+RESET)
+        elif canBuyPlatinum():
+            print(PLATINUM+" [3] Staff management"+RESET)
+        else:
+            print(BLUE+" [3] Staff management"+RESET)
         print()
         print(BLUE+" [0] End turn"+RESET)
         print()
 
-        try:
-            print(BLUE+"What would you like to do? [0-3]"+RESET)
-            choice = int(input(BLUE+"> "))
-            if choice in (0, 1, 2, 3):
-                print()
-            else:
-                print(RED+"Please enter either [0, 1, 2, 3]."+RESET)
+        while True:
+            try:
+                print(BLUE+"What would you like to do? [0-3]"+RESET)
+                choice = int(input(BLUE+"> "))
+                if choice in (0, 1, 2, 3):
+                    break
+                else:
+                    print(RED+"Please enter either [0, 1, 2, 3]."+RESET)
 
-        except:
-            print(RED+"Invalid. Please try again."+RESET)
+            except:
+                print(RED+"Invalid. Please try again."+RESET)
 
-
+        turnUsed = False
         if choice == 0:
             print()
             choice = 9
             validAction = False
             subturn = 4
+            turnUsed = True
 
         if choice == 1:
                 if fullturn == 1:
                     print(MAGENTA+"-Tutorial-"+RESET)
                     print(MAGENTA+"Buy a switch generator with your 100 coins."+RESET)
+                    print(MAGENTA+"However, do note: every generator you buy equates to"+RESET)
+                    print(MAGENTA+"more money added to the maintenance fee (in 3 turns)"+RESET)
 
                 print()
                 print(CYAN+"--- Buy Generators ---"+RESET)
@@ -561,23 +677,50 @@ while True :
                 print(BLUE+" [0] Back"+RESET)
                 print()
 
-                sub = int(input(BLUE+"> "))
+                while True:
+                    try:
+                        sub = int(input(BLUE+"> "))
 
-                if sub == 1 and money >= 100:
-                    switchGenerators.append("1")
-                    money -= 100
-                
-                elif sub == 2 and money >= 200:
-                    xboxGenerators.append("1")
-                    money -= 200
-                
-                elif sub == 3 and money >= 300:
-                    playstationGenerators.append("1")
-                    money -= 300
+                        if sub == 0:
+                            break
+
+                        if sub == 1:
+                            if money >= 100:
+                                switchGenerators.append("1")
+                                money -= 100
+                                print(GREEN+"Bought a switch generator."+RESET)
+                                turnUsed = True
+                                break
+                            else:
+                                print(RED+"You can't afford that."+RESET)
+                        
+                        elif sub == 2:
+                            if money >= 200:
+                                xboxGenerators.append("1")
+                                money -= 200
+                                print(GREEN+"Bought an xbox generator."+RESET)
+                                turnUsed = True
+                                break
+                            else:
+                                print(RED+"You can't afford that."+RESET)
+                        
+                        elif sub == 3:
+                            if money >= 300:
+                                playstationGenerators.append("1")
+                                money -= 300
+                                print(GREEN+"Bought a playstation generator."+RESET)
+                                turnUsed = True
+                                break
+                            else:
+                                print(RED+"You can't afford that."+RESET)
+                    except:
+                        print(RED+"Invalid. Please try again."+RESET)
+
 
         elif choice == 2:
             print()
             print(CYAN+"--- Hand Crafting ---"+RESET)
+            print()
 
             if fullturn == 1:
                 print()
@@ -606,46 +749,50 @@ while True :
             print(BLUE+" [0] Back"+RESET)
             print()
 
-            try:
-                productchoice = int(input(BLUE+"> "))
-                
-                if productchoice == 0:
-                    continue
+            while True:
+                try:
+                    productchoice = int(input(BLUE+"> "))
+                    
+                    if productchoice == 0:
+                        break
 
-                craft_time = getCraftTime()
+                    elif productchoice not in (1, 2, 3):
+                        print(RED+"Invalid. Please enter [0-3]"+RESET)
+                        continue
 
-                if active_event == "shortage":
-                    craft_time += 3
+                    craft_time = getCraftTime()
+                    if active_event == "shortage":
+                        craft_time += 3
 
-                if productchoice == 1 and "make_switch" in possibleActions:
-                    print(BLUE+"making product..."+RESET)
-                    time.sleep(craft_time)
-                    print(GREEN+"You now have one more switch"+RESET)
-                    switch = switch + 1
+                    if productchoice == 1 and "make_switch" in possibleActions:
+                        print(BLUE+"making product..."+RESET)
+                        time.sleep(craft_time)
+                        switch += 1
+                        print(GREEN+"You now have one more switch"+RESET)
+                        turnUsed = True
+                        break
 
-                elif productchoice == 2 and "make_xbox" in possibleActions:
-                    print(BLUE+"making product..."+RESET)
-                    time.sleep(craft_time)
-                    print(GREEN+"You now have one more xbox."+RESET)
-                    xbox = xbox + 1
+                    elif productchoice == 2 and "make_xbox" in possibleActions:
+                        print(BLUE+"making product..."+RESET)
+                        time.sleep(craft_time)
+                        xbox += 1
+                        print(GREEN+"You now have one more xbox."+RESET)
+                        turnUsed = True
+                        break
 
-                elif productchoice == 3 and "make_playstation" in possibleActions:
-                    print(BLUE+"making product..."+RESET)
-                    time.sleep(craft_time)
-                    print(GREEN+"You now have one more playstation."+RESET)
-                    playstation = playstation + 1
-
-                elif productchoice > 3:
-                    print(RED+"Invalid. Please enter [0-3]"+RESET)
-
-                elif productchoice < 0:
-                    print(RED+"Invalid. Please enter [0-3]"+RESET)
-                
-                else:
-                    print(RED+"You do not have a generator for this product yet and"+RESET)
-                    print(RED+"therefore do not have the blueprints to make it yet."+RESET)
-            except:
-                print(RED+"Invalid. Please try again."+RESET)
+                    elif productchoice == 3 and "make_playstation" in possibleActions:
+                        print(BLUE+"making product..."+RESET)
+                        time.sleep(craft_time)
+                        playstation += 1
+                        print(GREEN+"You now have one more playstation."+RESET)
+                        turnUsed = True
+                        break
+                    
+                    else:
+                        print(RED+"You do not have the required generator yet."+RESET)
+                        
+                except:
+                    print(RED+"Invalid. Please try again."+RESET)
 
             choice = 9
             validAction = False
@@ -681,35 +828,115 @@ while True :
             else:
                 print(RED+" [3] Hire marketing staff -", market_cost, "c (too expensive)"+RESET)
             
+            if canBuyAward():
+                print()
+                print(CYAN+"--- Trophies ---"+RESET)
+
+                if not awards["bronze"] and canBuyBronze():
+                    print(BRONZE+" [6] Claim Bronze Shop Trophy"+RESET)
+
+                if awards["bronze"] and not awards["silver"] and canBuySilver():
+                    print(SILVER+" [7] Claim Silver Shop Trophy"+RESET)
+
+                if awards["silver"] and not awards["gold"] and canBuyGold():
+                    print(GOLD+" [8] Claim Gold Superstore Trophy"+RESET)
+
+                if awards["gold"] and not awards["platinum"] and canBuyPlatinum():
+                    print(PLATINUM+" [9] Claim Platinum Superstore Trophy"+RESET)
+
             print()
             print(BLUE+" [0] Back"+RESET)
             print()
-                
-            sub = int(input(BLUE+"> "))
-            if sub == 1 and money >= shop_cost:
-                money -= shop_cost
-                shop_staff += 1
-                print(GREEN+"You hired a shopkeeping staff member!"+RESET)
             
-            elif sub == 2:
-                if getCraftTime() == 1:
-                    print(YELLOW+"Your manufacturing process is already fully optimised."+RESET)
-                elif money >= manu_cost:
-                    money -= manu_cost
-                    manufacturing_staff += 1
-                    print(GREEN+"You hired manufacturing staff!"+RESET)
-                else:
-                    print(RED+"You can't afford that."+RESET)
-            
-            elif sub == 3:
-                if money >= market_cost:
-                    money -= market_cost
-                    marketing_staff += 1
-                    print(GREEN+"You hired marketing staff! More VIPs may appear."+RESET)
-                else:
-                    print(RED+"You can't afford that."+RESET)
+            while True:
+                try:
+                    sub = int(input(BLUE+"> "))
+
+                    if sub == 0:
+                        break
+
+                    elif sub == 1:
+                        if money >= shop_cost:
+                            money -= shop_cost
+                            shop_staff += 1
+                            print(GREEN+"You hired a shopkeeping staff member!"+RESET)
+                            turnUsed = True
+                            break
+                        else:
+                            print(RED+"You can't afford that."+RESET)
                     
-        subturn += 1
+                    elif sub == 2:
+                        if getCraftTime() == 1:
+                            print(YELLOW+"Your manufacturing process is already fully optimised."+RESET)
+                        elif money >= manu_cost:
+                            money -= manu_cost
+                            manufacturing_staff += 1
+                            print(GREEN+"You hired manufacturing staff!"+RESET)
+                            turnUsed = True
+                            break
+                        else:
+                            print(RED+"You can't afford that."+RESET)
+                    
+                    elif sub == 3:
+                        if money >= market_cost:
+                            money -= market_cost
+                            marketing_staff += 1
+                            print(GREEN+"You hired marketing staff! More VIPs may shop here."+RESET)
+                            turnUsed = True
+                            break
+                        else:
+                            print(RED+"You can't afford that."+RESET)
+                    
+                    elif sub == 6 and canBuyBronze() and not awards["bronze"]:
+                        awards["bronze"] = True
+                        applyAwardBuff("bronze")
+                        print(GREEN+"🏆 Bronze Shop Trophy earned!"+RESET)
+                        print(GREEN+"Reputation increased!"+RESET)
+                        turnUsed = True
+                        break
+
+                    elif sub == 7 and canBuySilver() and awards["bronze"]:
+                        awards["silver"] = True
+                        applyAwardBuff("silver")
+                        print(GREEN+"🏆 Silver Shop Trophy earned!"+RESET)
+                        print(GREEN+"Extra shop staff hired for free!"+RESET)
+                        turnUsed = True
+                        break
+
+                    elif sub == 8 and canBuyGold() and awards["silver"]:
+                        awards["gold"] = True
+                        applyAwardBuff("gold")
+                        print(GREEN+"🏆 Gold Superstore Trophy earned!"+RESET)
+                        print(GREEN+"Your shop is now famous!"+RESET)
+                        turnUsed = True
+                        break
+
+                    elif sub == 9 and canBuyGoal():
+                        print()
+                        print(GOLD+"🏆 CONGRATULATIONS! 🏆"+RESET)
+                        print(GOLD+"You earned the " + GOAL_NAME + "!"+RESET)
+                        print(GOLD+"Your shop is legendary!"+RESET)
+                        print(GOLD+"Thanks for playing!"+RESET)
+                        print()
+                        turnUsed = True
+                        game_won = True
+                        break
+
+                    
+                    else:
+                        if canBuyAward:
+                            print(RED+"Invalid. Please enter [0-3] or [6-9]."+RESET)
+                        else:
+                            print(RED+"Invalid. Please enter [0-3].")
+                
+                except:
+                    print(RED+"Invalid. Please try again.")
+
+        if turnUsed == True:
+            subturn += 1
+        if game_won:
+            break
+        staff = shop_staff + manufacturing_staff + marketing_staff
 
 
 
@@ -762,9 +989,10 @@ while True :
 
     print(DEFAULT+"Customers in shop:"+RESET)
     for i, customer in enumerate(customers):
+        row_color = DEFAULT if i % 2 == 0 else CYAN
         amount = customer.get("amount", 1)
         print(
-            DEFAULT+ i, "-", customer ['name'],
+            row_color+" - ", i, "-", customer ['name'],
             "(" + customer['type'].capitalize() + ")", " wants: ",
             amount, customer['want'],
             "((e)s) they will wait ", customer['patience'], "turns."+RESET
@@ -789,7 +1017,7 @@ while True :
 
             if choice == -1:
                 break
-            if choice < 0 or choice >= len(customers):
+            if not 0 <= choice < len(customers):
                 print(RED+"Invalid customer number."+RESET)
                 continue
             
@@ -855,6 +1083,12 @@ while True :
                 reputation += reputation - orig_reputation
             clampReputation()
 
+            if customer["type"] == "vip":
+                vip_served += 1
+            else:
+                non_vip_served += 1
+
+
             print(
                 GREEN+"Sold", amount, want, "((e)s) to",
                 customer['name'], "(" + customer['type'] + ") for",
@@ -864,6 +1098,20 @@ while True :
 
             customers.pop(choice)
             customers_served += 1
+
+            # re display updated customer list
+            if len(customers) > 0:
+                print()
+                print(DEFAULT+"Updated customers:"+RESET)
+                for i, customer in enumerate(customers):
+                    row_color = DEFAULT if i % 2 == 0 else CYAN
+                    amount = customer.get("amount", 1)
+                    print(
+                        row_color+" - ", i, "-", customer['name'],
+                        "(" + customer['type'].capitalize() + ") wants:",
+                        amount, customer['want'],
+                        ". They will wait", customer['patience'], "turns."+RESET
+                    )
 
         except:
             print(RED+"Error!"+RESET)
@@ -893,6 +1141,28 @@ while True :
         print(GREEN+"Your shop is well respected! VIPs love it here."+RESET)
     elif reputation <= 20:
         print(RED+"Your shop has a bad reputation… customers are more impatient."+RESET)
+    
+    if awards["gold"] or awards["platinum"] and reputation >= 85:
+        print(GREEN+"Customers talk about your shop across the city!"+RESET)
+    
+    print()
+    print(DEFAULT+"Shop award rank:"+RESET)
+
+    if awards["platinum"]:
+        print(PLATINUM+"💎 Platinum Superstore Trophy — LEGENDARY SHOP 💎"+RESET)
+
+    elif awards["gold"]:
+        print(GOLD+"🥇 Gold Superstore Trophy — Elite business 🥇"+RESET)
+
+    elif awards["silver"]:
+        print(SILVER+"🥈 Silver Shop Trophy — Growing success 🥈"+RESET)
+
+    elif awards["bronze"]:
+        print(BRONZE+"🥉 Bronze Shop Trophy — On the rise 🥉"+RESET)
+
+    else:
+        print(DEFAULT+"No trophies yet — keep building your shop!"+RESET)
+
 
 
     if active_event is not None:
