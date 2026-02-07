@@ -104,7 +104,7 @@ xbox_max = 160
 playstation_min = 100
 playstation_max = 215
 
-GOAL_COST = 2000
+GOAL_COST = 1800
 GOAL_NAME = "Platinum Superstore Trophy"
 game_won = False
 awards = {
@@ -202,8 +202,11 @@ def createCustomer(force_type=None):
     elif customer_type == "bulk":
         patience = random.randint(2, 3)
     
-    else:
-        patience = random.randint(2,4)
+    elif customer_type == "normal":
+        if fullturn == 0:
+            patience = random.randint(3,5)
+        else:
+            patience = random.randint(2,4)
 
     bulk_amount = 1
     if customer_type == "bulk":
@@ -254,10 +257,16 @@ def prependPlusSign(number):
 
 def clampReputation():
     global reputation
-    if reputation > 100:
-        reputation = 100
-    elif reputation < 0:
-        reputation = 0
+    if awards["platinum"] == True:
+        if reputation > 125:
+            reputation = 125
+        elif reputation < 5:
+            reputation = 5
+    else:
+        if reputation > 100:
+            reputation = 100
+        elif reputation < 0:
+            reputation = 0
     
 def clampPrice(price, min_price, max_price):
     return max(min_price, min(price, max_price))
@@ -319,32 +328,35 @@ def canBuyGoal():
         shop_staff >= 4 and
         manufacturing_staff >= 1 and
         marketing_staff >= 1 and
-        reputation >= 75
+        reputation >= 80
     )
 
 def canBuyBronze():
     return (
         money >= 300 and
-        reputation >= 55 and
-        vip_served >= 2
+        reputation >= 50 and
+        vip_served >= 1 and 
+        non_vip_served >= 5
     )
 
 def canBuySilver():
     return (
         money >= 800 and
-        reputation >= 65 and
+        reputation >= 60 and
         vip_served >= 2 and
-        staff >= 2
+        staff >= 1 and
+        non_vip_served >= 10
     )
 
 def canBuyGold():
     return (
-        money >= 1400 and
+        money >= 1200 and
         reputation >= 70 and
         vip_served >= 3 and
         shop_staff >= 3 and
         manufacturing_staff >= 1 and
-        marketing_staff >= 1
+        marketing_staff >= 1 and 
+        non_vip_served >= 15
     )
 
 def canBuyPlatinum():
@@ -366,15 +378,24 @@ def applyAwardBuff(tier):
     global reputation, shop_staff
 
     if tier == "bronze":
-        reputation += 5
-
-    elif tier == "silver":
         reputation += 10
         shop_staff += 1
 
-    elif tier == "gold":
+    elif tier == "silver":
         reputation += 15
+        if not getCraftTime() == 1:
+            manufacturing_staff += 1
+
+    elif tier == "gold":
+        reputation += 20
         marketing_staff += 1
+    
+    elif tier == "platinum":
+        reputation+= 30
+        marketing_staff += 2
+        shop_staff += 2
+        if not getCraftTime() in (1, 2):
+            manufacturing_staff += 2
 
     clampReputation()
 
@@ -390,13 +411,13 @@ customers = [createCustomer("normal"), createCustomer("normal")]
 #---------------------------------------start game loop--------------------------------------------------
 
 print()
-print(CYAN+"Tycoon game V26.06.2"+RESET)
+print(CYAN+"Tycoon game V26.07.04"+RESET)
 print()
 print()
-print(MAGENTA+"-Tutorial-"+RESET)
-print(MAGENTA+"Welcome to my tycoon game!"+RESET)
-print(MAGENTA+"I'll be teaching you how to play for your first turn!"+RESET)
-print(MAGENTA+"Now, without further ado lets get going! :)"+RESET)
+print(BLUE+"-Tutorial-"+RESET)
+print(BLUE+"Welcome to my tycoon game!"+RESET)
+print(BLUE+"I'll be teaching you how to play for your first turn!"+RESET)
+print(BLUE+"Now, without further ado lets get going! :)"+RESET)
 print()
 
 while not game_won:
@@ -468,6 +489,9 @@ while not game_won:
         switch_price = switch_price + random.randint(-10,10)
         xbox_price = xbox_price + random.randint(-10,10)
         playstation_price = playstation_price + random.randint(-10,10)
+        switch_price = round(switch_price / 5) * 5
+        xbox_price = round(xbox_price / 5) * 5
+        playstation_price = round(playstation_price / 5) * 5
 
         switch_price = clampPrice(switch_price, switch_min, switch_max)
         xbox_price = clampPrice(xbox_price, xbox_min, xbox_max)
@@ -527,15 +551,16 @@ while not game_won:
 
     if fullturn == 1:
         print()
-        print(MAGENTA+"-Tutorial-"+RESET)
-        print(MAGENTA+"Before a turn you will be notified of how many customers are waiting and what they want."+RESET)
-        print(MAGENTA+"These ones both want a switch."+RESET)
+        print(BLUE+"-Tutorial-"+RESET)
+        print(BLUE+"Before a turn you will be notified of how many customers are waiting and what they want."+RESET)
+        print(BLUE+"These ones both want a switch."+RESET)
         print()
     
-    print(YELLOW+"Customers waiting: ", len(customers), "." +RESET)
+    print(YELLOW+"Customers waiting", len(customers), ":" +RESET)
 
     for i, customer in enumerate(customers):
         row_color = DEFAULT if i % 2 == 0 else CYAN
+
         amount = customer.get("amount", 1)
         print()
         print(
@@ -548,12 +573,12 @@ while not game_won:
     print(DEFAULT+"Currently, you have:"+RESET)
     print()
     print(DEFAULT+" - ",  switch, " switch(es)"+RESET)
-    print(DEFAULT+" - ", xbox, " xbox(es)"+RESET)
+    print(CYAN+" - ", xbox, " xbox(es)"+RESET)
     print(DEFAULT+" - ", playstation, " playstation(s)"+RESET)
     print()
     print(DEFAULT+"Currently, the generators you have are:"+RESET)
     print(DEFAULT+" - ", len(switchGenerators), " switch generator(s)"+RESET)
-    print(DEFAULT+" - ", len(xboxGenerators), " xbox generator(s)"+RESET)
+    print(CYAN+" - ", len(xboxGenerators), " xbox generator(s)"+RESET)
     print(DEFAULT+" - ", len(playstationGenerators), " playstation generator(s)"+RESET)
 
     status = "ONLINE" if generators_active else "OFFLINE"
@@ -562,12 +587,12 @@ while not game_won:
     print(color + "Generators status:", status +RESET)
     print()
     print(DEFAULT+"Shop staff:", shop_staff, "employees"+RESET)
-    print(DEFAULT+"Customers you can serve per turn:", shop_staff, "."+RESET)
+    print(CYAN+"Customers you can serve per turn:", shop_staff, "."+RESET)
     print(DEFAULT+"Manufacturing staff:", manufacturing_staff, "."+RESET)
-    print(DEFAULT+"Hand-craft time:",
+    print(CYAN+"Hand-craft time:",
         getCraftTime(), "seconds"+RESET)
     print(DEFAULT+"Marketing staff:", marketing_staff, "."+RESET)
-    print(DEFAULT+"Effectiveness:", (marketing_staff + 1), "."+RESET)
+    print(CYAN+"Effectiveness:", (marketing_staff + 1), "."+RESET)
 
 
           
@@ -588,21 +613,21 @@ while not game_won:
         if fullturn == 1:
             if subturn == 1:
                 print()
-                print(MAGENTA+"-Tutorial-"+RESET)
-                print(MAGENTA+"Once your turn starts, you will then be asked what you want to do."+RESET)
-                print(MAGENTA+"In each turn you will have three 'subturns'. In a subturn, if you wish,"+RESET)
-                print(MAGENTA+"you can end your turn even if you have not used all three subturns."+RESET)
-                print(MAGENTA+"This time, select 'buy generators' this time. Let's get a switch generator."+RESET)
+                print(BLUE+"-Tutorial-"+RESET)
+                print(BLUE+"Once your turn starts, you will then be asked what you want to do."+RESET)
+                print(BLUE+"In each turn you will have three 'subturns'. In a subturn, if you wish,"+RESET)
+                print(BLUE+"you can end your turn even if you have not used all three subturns."+RESET)
+                print(BLUE+"This time, select 'buy generators' this time. Let's get a switch generator."+RESET)
                 print()
             elif subturn == 2:
                 print()
-                print(MAGENTA+"-Tutorial-"+RESET)
-                print(MAGENTA+"Now make a product by hand."+RESET)
+                print(BLUE+"-Tutorial-"+RESET)
+                print(BLUE+"Now make a product by hand."+RESET)
                 print()
             elif subturn == 3:
                 print()
-                print(MAGENTA+"-Tutorial-"+RESET)
-                print(MAGENTA+"Once again make a product by hand."+RESET)
+                print(BLUE+"-Tutorial-"+RESET)
+                print(BLUE+"Once again make a product by hand."+RESET)
                 print()
 
         #-----------------------------------------suturn------------------------------------------------
@@ -611,8 +636,16 @@ while not game_won:
         print()
         print(CYAN+"Choose an action category:"+RESET)
         print()
-        print(BLUE+" [1] Buy generators"+RESET)
-        print(BLUE+" [2] Hand crafting"+RESET)
+        if fullturn == 1:
+            if subturn == 1:
+                print(BLUE+" [1] Buy generators"+RESET)
+                print(MAGENTA+" [2] Hand crafting"+RESET)
+            else:
+                print(MAGENTA+" [1] Buy generators"+RESET)
+                print(BLUE+" [2] Hand crafting"+RESET)
+        else:
+            print(MAGENTA+" [1] Buy generators"+RESET)
+            print(MAGENTA+" [2] Hand crafting"+RESET)
         if canBuyBronze():
             print(BRONZE+" [3] Staff management"+RESET)
         elif canBuySilver():
@@ -622,15 +655,15 @@ while not game_won:
         elif canBuyPlatinum():
             print(PLATINUM+" [3] Staff management"+RESET)
         else:
-            print(BLUE+" [3] Staff management"+RESET)
+            print(MAGENTA+" [3] Staff management"+RESET)
         print()
-        print(BLUE+" [0] End turn"+RESET)
+        print(MAGENTA+" [0] End turn"+RESET)
         print()
 
         while True:
             try:
-                print(BLUE+"What would you like to do? [0-3]"+RESET)
-                choice = int(input(BLUE+"> "))
+                print(MAGENTA+"What would you like to do? [0-3]"+RESET)
+                choice = int(input(MAGENTA+"> "))
                 if choice in (0, 1, 2, 3):
                     break
                 else:
@@ -649,17 +682,20 @@ while not game_won:
 
         if choice == 1:
                 if fullturn == 1:
-                    print(MAGENTA+"-Tutorial-"+RESET)
-                    print(MAGENTA+"Buy a switch generator with your 100 coins."+RESET)
-                    print(MAGENTA+"However, do note: every generator you buy equates to"+RESET)
-                    print(MAGENTA+"more money added to the maintenance fee (in 3 turns)"+RESET)
+                    print(BLUE+"-Tutorial-"+RESET)
+                    print(BLUE+"Buy a switch generator with your 100 coins."+RESET)
+                    print(BLUE+"However, do note: every generator you buy equates to"+RESET)
+                    print(BLUE+"more money added to the maintenance fee (in 3 turns)"+RESET)
 
                 print()
                 print(CYAN+"--- Buy Generators ---"+RESET)
                 print()
 
                 if "get_switch_generator" in possibleActions:
-                    print(GREEN+" [1] Switch generator - 100c"+RESET)
+                    if fullturn == 1:
+                        print(BLUE+" [1] Switch generator - 100c"+RESET)
+                    else:
+                        print(GREEN+" [1] Switch generator - 100c"+RESET)
                 else:
                     print(RED+" [1] Switch generator - 100c (too expensive)"+RESET)
 
@@ -674,12 +710,12 @@ while not game_won:
                     print(RED+" [3] Playstation generator - 300c (too expensive)"+RESET)
                 
                 print()
-                print(BLUE+" [0] Back"+RESET)
+                print(MAGENTA+" [0] Back"+RESET)
                 print()
 
                 while True:
                     try:
-                        sub = int(input(BLUE+"> "))
+                        sub = int(input(MAGENTA+"> "))
 
                         if sub == 0:
                             break
@@ -724,12 +760,15 @@ while not game_won:
 
             if fullturn == 1:
                 print()
-                print(MAGENTA+"-Tutorial-"+RESET)
-                print(MAGENTA+"Make a switch."+RESET)
+                print(BLUE+"-Tutorial-"+RESET)
+                print(BLUE+"Make a switch."+RESET)
                 print()
 
             if "make_switch" in possibleActions:
-                print(GREEN+" [1] One switch"+RESET)
+                if fullturn == 1:
+                    print(BLUE+" [1] One switch"+RESET)
+                else:
+                    print(GREEN+" [1] One switch"+RESET)
             
             else:
                 print(RED+" [1] switch (requires generators)"+RESET)
@@ -746,12 +785,12 @@ while not game_won:
             else:
                 print(RED+" [3] playstation (requires generators)"+RESET)
             print()
-            print(BLUE+" [0] Back"+RESET)
+            print(MAGENTA+" [0] Back"+RESET)
             print()
 
             while True:
                 try:
-                    productchoice = int(input(BLUE+"> "))
+                    productchoice = int(input(MAGENTA+"> "))
                     
                     if productchoice == 0:
                         break
@@ -765,7 +804,7 @@ while not game_won:
                         craft_time += 3
 
                     if productchoice == 1 and "make_switch" in possibleActions:
-                        print(BLUE+"making product..."+RESET)
+                        print(MAGENTA+"making product..."+RESET)
                         time.sleep(craft_time)
                         switch += 1
                         print(GREEN+"You now have one more switch"+RESET)
@@ -773,7 +812,7 @@ while not game_won:
                         break
 
                     elif productchoice == 2 and "make_xbox" in possibleActions:
-                        print(BLUE+"making product..."+RESET)
+                        print(MAGENTA+"making product..."+RESET)
                         time.sleep(craft_time)
                         xbox += 1
                         print(GREEN+"You now have one more xbox."+RESET)
@@ -781,7 +820,7 @@ while not game_won:
                         break
 
                     elif productchoice == 3 and "make_playstation" in possibleActions:
-                        print(BLUE+"making product..."+RESET)
+                        print(MAGENTA+"making product..."+RESET)
                         time.sleep(craft_time)
                         playstation += 1
                         print(GREEN+"You now have one more playstation."+RESET)
@@ -807,7 +846,7 @@ while not game_won:
             market_cost = getMarketingStaffCost()
 
             print(DEFAULT+"Shopkeeping staff:", shop_staff, "."+RESET)
-            print(DEFAULT+"Manufacturing staff:", manufacturing_staff, "." +RESET)
+            print(CYAN+"Manufacturing staff:", manufacturing_staff, "." +RESET)
             print(DEFAULT+"Marketing staff:", marketing_staff, "." +RESET)
             print()
             if money >= shop_cost:
@@ -845,12 +884,12 @@ while not game_won:
                     print(PLATINUM+" [9] Claim Platinum Superstore Trophy"+RESET)
 
             print()
-            print(BLUE+" [0] Back"+RESET)
+            print(MAGENTA+" [0] Back"+RESET)
             print()
             
             while True:
                 try:
-                    sub = int(input(BLUE+"> "))
+                    sub = int(input(MAGENTA+"> "))
 
                     if sub == 0:
                         break
@@ -890,36 +929,58 @@ while not game_won:
                     elif sub == 6 and canBuyBronze() and not awards["bronze"]:
                         awards["bronze"] = True
                         applyAwardBuff("bronze")
-                        print(GREEN+"🏆 Bronze Shop Trophy earned!"+RESET)
-                        print(GREEN+"Reputation increased!"+RESET)
+                        print(BRONZE+"🏆 Bronze Shop Trophy earned!"+RESET)
+                        print(BRONZE+"Reputation increased!"+RESET)
                         turnUsed = True
                         break
 
                     elif sub == 7 and canBuySilver() and awards["bronze"]:
                         awards["silver"] = True
                         applyAwardBuff("silver")
-                        print(GREEN+"🏆 Silver Shop Trophy earned!"+RESET)
-                        print(GREEN+"Extra shop staff hired for free!"+RESET)
+                        print(SILVER+"🏆 Silver Shop Trophy earned!"+RESET)
+                        print(SILVER+"Extra shop staff hired for free!"+RESET)
                         turnUsed = True
                         break
 
                     elif sub == 8 and canBuyGold() and awards["silver"]:
                         awards["gold"] = True
                         applyAwardBuff("gold")
-                        print(GREEN+"🏆 Gold Superstore Trophy earned!"+RESET)
-                        print(GREEN+"Your shop is now famous!"+RESET)
+                        print(GOLD+"🏆 Gold Superstore Trophy earned!"+RESET)
+                        print(GOLD+"Your shop is now famous!"+RESET)
                         turnUsed = True
                         break
 
                     elif sub == 9 and canBuyGoal():
+                        awards["platinum"] = True
                         print()
-                        print(GOLD+"🏆 CONGRATULATIONS! 🏆"+RESET)
-                        print(GOLD+"You earned the " + GOAL_NAME + "!"+RESET)
-                        print(GOLD+"Your shop is legendary!"+RESET)
-                        print(GOLD+"Thanks for playing!"+RESET)
+                        print(PLATINUM+"🏆 CONGRATULATIONS! 🏆"+RESET)
+                        print(PLATINUM+"You earned the " + GOAL_NAME + "!"+RESET)
+                        print(PLATINUM+"Your shop is legendary!"+RESET)
+                        print(PLATINUM+"Would you like to keep playing [1] or end the game? [0]"+RESET)
+                        while True:
+                            try:
+                                endGame = int(input(PLATINUM+"> "))
+                                if endGame == 0:
+                                    print()
+                                    print(PLATINUM+"WELL DONE!"+RESET)
+                                    print(PLATINUM+"YOU HAVE BEATEN THE GAME!!!"+RESET)
+                                    print(PLATINUM+"Farewell, master of business!"+RESET)
+                                    print(PLATINUM+"I hope you have a nice time here!")
+                                    print(PLATINUM+"Thanks for playing!"+RESET)
+                                    print()
+                                    game_won = True
+                                    break
+                                else:
+                                    applyAwardBuff("platinum")
+                                    print(PLATINUM+"I knew you'd stay, master of business!"+RESET)
+                                    print(PLATINUM+"With this award you will receive many buffs!"+RESET)
+                                    print(PLATINUM+"Enjoy your free play now!"+RESET)
+                                    break
+                            except:
+                                print(RED+"That is invalid, master of business. Please try again")
+
                         print()
                         turnUsed = True
-                        game_won = True
                         break
 
                     
@@ -934,11 +995,13 @@ while not game_won:
 
         if turnUsed == True:
             subturn += 1
-        if game_won:
+        if game_won == True:
             break
+
         staff = shop_staff + manufacturing_staff + marketing_staff
 
-
+    if game_won == True:
+        break
 
 
     #----------------------------------selling here------------------------------------------------------------------------------
@@ -962,10 +1025,10 @@ while not game_won:
 
     if fullturn == 1:
         print()
-        print(MAGENTA+"-Tutorial-"+RESET)
-        print(MAGENTA+"After a turn you can then sell your made products to waiting customers."+RESET)
-        print(MAGENTA+"Sell two of your switches to these normal customers."+RESET)
-        print(MAGENTA+"Some customers will occasionally have a different type such as vips who pay more."+RESET)
+        print(BLUE+"-Tutorial-"+RESET)
+        print(BLUE+"After a turn you can then sell your made products to waiting customers."+RESET)
+        print(BLUE+"Sell two of your switches to these normal customers."+RESET)
+        print(BLUE+"Some customers will occasionally have a different type such as vips who pay more."+RESET)
         print()
 
     print()
@@ -973,9 +1036,9 @@ while not game_won:
     print()
     print(DEFAULT+"You have:"+RESET)
     print()
-    print(DEFAULT+" - ", switch, " switch(es)"+RESET)
+    print(CYAN+" - ", switch, " switch(es)"+RESET)
     print(DEFAULT+" - ", xbox, " xbox(es)"+RESET)
-    print(DEFAULT+" - ", playstation, " playstation(s)"+RESET)
+    print(CYAN+" - ", playstation, " playstation(s)"+RESET)
 
     customers.sort(
     key=lambda c: (
@@ -985,11 +1048,15 @@ while not game_won:
 )
 
     if marketing_staff > 0:
-        print(MAGENTA+"📣 Marketing campaign active (+",marketing_staff, " influence)"+RESET)
+        print(BLUE+"📣 Marketing campaign active (+",marketing_staff, " influence)"+RESET)
 
     print(DEFAULT+"Customers in shop:"+RESET)
     for i, customer in enumerate(customers):
-        row_color = DEFAULT if i % 2 == 0 else CYAN
+        if fullturn == 1:
+            row_color = BLUE if i % 2 == 0 else CYAN
+        else:
+            row_color = DEFAULT if i % 2 == 0 else CYAN
+
         amount = customer.get("amount", 1)
         print(
             row_color+" - ", i, "-", customer ['name'],
@@ -999,6 +1066,7 @@ while not game_won:
         )
         if customer["patience"] == 1:
                 print(RED+"⚠ This customer is about to leave! ⚠"+RESET)
+        print()
 
     orig_sale_money = money
 
@@ -1009,11 +1077,11 @@ while not game_won:
 
     while customers_served < max_servesPerTurn and len(customers) > 0:
         print()
-        print(DEFAULT+"You can serve ", max_servesPerTurn - customers_served, " more customer(s)."+RESET)
-        print(DEFAULT+"Enter customer number to serve or -1 to stop serving."+RESET)
+        print(MAGENTA+"You can serve ", max_servesPerTurn - customers_served, " more customer(s)."+RESET)
+        print(MAGENTA+"Enter customer number to serve or -1 to stop serving."+RESET)
 
         try:
-            choice = int(input(BLUE+">"))
+            choice = int(input(MAGENTA+">"))
 
             if choice == -1:
                 break
@@ -1104,7 +1172,10 @@ while not game_won:
                 print()
                 print(DEFAULT+"Updated customers:"+RESET)
                 for i, customer in enumerate(customers):
-                    row_color = DEFAULT if i % 2 == 0 else CYAN
+                    if fullturn == 1:
+                        row_color = BLUE if i % 2 == 0 else CYAN
+                    else:
+                        row_color = DEFAULT if i % 2 == 0 else CYAN
                     amount = customer.get("amount", 1)
                     print(
                         row_color+" - ", i, "-", customer['name'],
@@ -1112,6 +1183,9 @@ while not game_won:
                         amount, customer['want'],
                         ". They will wait", customer['patience'], "turns."+RESET
                     )
+                    if customer["patience"] == 1:
+                        print(RED+"⚠ This customer is about to leave! ⚠"+RESET)
+                    print()
 
         except:
             print(RED+"Error!"+RESET)
@@ -1124,44 +1198,64 @@ while not game_won:
     print()
     print()
     if fullturn == 1:
-        print(MAGENTA+"-Tutorial-"+RESET)
-        print(MAGENTA+"After a turn you will receive a summary of that turn!"+RESET)
+        print(BLUE+"-Tutorial-"+RESET)
+        print(BLUE+"After a turn you will receive a summary of that turn!"+RESET)
         print()
     print(DEFAULT+"Turn ", fullturn, " summary:"+RESET)
-    print(DEFAULT+ prependPlusSign(int(switch - orig_switches)), " switch(es)"+RESET)
+    print(CYAN+ prependPlusSign(int(switch - orig_switches)), " switch(es)"+RESET)
     print(DEFAULT+ prependPlusSign(int(xbox - orig_xboxes)), " xbox(es)"+RESET)
-    print(DEFAULT+ prependPlusSign(int(playstation - orig_playstations)), " playstation(s)"+RESET)
+    print(CYAN+ prependPlusSign(int(playstation - orig_playstations)), " playstation(s)"+RESET)
     print(DEFAULT+"-", orig_money - orig_sale_money, " spent"+RESET)
-    print(DEFAULT+"+", money - orig_sale_money, " sales"+RESET)
+    print(CYAN+"+", money - orig_sale_money, " sales"+RESET)
 
     print(DEFAULT+ prependPlusSign(int(money - orig_money)), " overall profit"+RESET)
     print()
-    print(DEFAULT+"Shop reputation:", reputation, "/ 100"+RESET)
-    if reputation >= 80:
+    if awards["platinum"] == True:
+        print(DEFAULT+"Shop reputation:", reputation, "/ 125"+RESET)
+    else:
+        print(DEFAULT+"Shop reputation:", reputation, "/ 100"+RESET)
+    if reputation >= 100:
+        print(PLATINUM+"Customers talk about your shop across the city!"+RESET)
+
+    elif reputation >= 80 and reputation < 100:
         print(GREEN+"Your shop is well respected! VIPs love it here."+RESET)
+
     elif reputation <= 20:
         print(RED+"Your shop has a bad reputation… customers are more impatient."+RESET)
     
-    if awards["gold"] or awards["platinum"] and reputation >= 85:
-        print(GREEN+"Customers talk about your shop across the city!"+RESET)
+        
     
     print()
     print(DEFAULT+"Shop award rank:"+RESET)
 
     if awards["platinum"]:
         print(PLATINUM+"💎 Platinum Superstore Trophy — LEGENDARY SHOP 💎"+RESET)
+        print(PLATINUM+"💎Well done on your big achievement!!!💎"+RESET)
 
     elif awards["gold"]:
         print(GOLD+"🥇 Gold Superstore Trophy — Elite business 🥇"+RESET)
+        print(GOLD+"Platinum trophy requirements:"+RESET)
+        print(GOLD+" -",GOAL_COST, "c")
+        print(GOLD+" - Rep: 80 or more")
 
     elif awards["silver"]:
         print(SILVER+"🥈 Silver Shop Trophy — Growing success 🥈"+RESET)
+        print(SILVER+"Gold trophy requirements:"+RESET)
+        print(SILVER+" - 1200c")
+        print(SILVER+" - Rep: 70 or more")
 
     elif awards["bronze"]:
         print(BRONZE+"🥉 Bronze Shop Trophy — On the rise 🥉"+RESET)
+        print(BRONZE+"Silver trophy requirements:"+RESET)
+        print(BRONZE+" - 800c")
+        print(BRONZE+" - 60 rep")
 
     else:
         print(DEFAULT+"No trophies yet — keep building your shop!"+RESET)
+        print(DEFAULT+"First trophy requirements:"+RESET)
+        print(DEFAULT+" - 300 or more coins")
+        print(DEFAULT+" - reputation of 50 or above"+RESET)
+    
 
 
 
@@ -1180,10 +1274,10 @@ while not game_won:
     
     if fullturn == 1:
         print()
-        print(MAGENTA+"-Tutorial-"+RESET)
-        print(MAGENTA+"Well, I think thats about it. You know all you need to know."+RESET)
-        print(MAGENTA+"It was nice teaching you but it's time you continue on your own!"+RESET)
-        print(MAGENTA+"Enjoy my game! :)"+RESET)
+        print(BLUE+"-Tutorial-"+RESET)
+        print(BLUE+"Well, I think thats about it. You know all you need to know."+RESET)
+        print(BLUE+"It was nice teaching you but it's time you continue on your own!"+RESET)
+        print(BLUE+"Enjoy my game! :)"+RESET)
         print()
 
     print()
