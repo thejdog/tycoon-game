@@ -65,9 +65,6 @@ playstation = 0
 orig_playstations = 0
 orig_switches = 0
 orig_xboxes = 0
-switchGenerators = []
-xboxGenerators = []
-playstationGenerators = []
 
 possibleActions = []
 validAction = False
@@ -81,9 +78,13 @@ switch_price = 50
 xbox_price = 100
 playstation_price = 150
 
-switch_maintainance = 5
-xbox_maintainance = 10
-playstation_maintainance = 15
+switchGenerators = []
+xboxGenerators = []
+playstationGenerators = []
+genProduction = 1
+switch_maintainance = 10
+xbox_maintainance = 15
+playstation_maintainance = 20
 
 generators_active = True
 active_event = None
@@ -332,45 +333,31 @@ def canBuyGoal():
     )
 
 def canBuyBronze():
-    return (
-        money >= 300 and
-        reputation >= 50 and
-        vip_served >= 1 and 
-        non_vip_served >= 5
-    )
+    if money >= 300 and reputation >= 50 and vip_served >= 1 and non_vip_served >= 5:
+
+        return True
 
 def canBuySilver():
-    return (
-        money >= 800 and
-        reputation >= 60 and
-        vip_served >= 2 and
-        staff >= 1 and
-        non_vip_served >= 10
-    )
+    if money >= 800 and reputation >= 60 and vip_served >= 2 and staff >= 1 and non_vip_served >= 10:
+        return True
 
 def canBuyGold():
-    return (
-        money >= 1200 and
-        reputation >= 70 and
-        vip_served >= 3 and
-        shop_staff >= 3 and
-        manufacturing_staff >= 1 and
-        marketing_staff >= 1 and 
-        non_vip_served >= 15
-    )
+    if money >= 1200 and reputation >= 70 and vip_served >= 3 and shop_staff >= 3 and manufacturing_staff >= 1 and marketing_staff >= 1 and  non_vip_served >= 15:
+        return True
 
 def canBuyPlatinum():
-    return canBuyGoal()
+    if canBuyGoal():
+        return True
 
 def canBuyAward():
     if canBuyBronze == True:
-        return canBuyBronze
+        return True
     elif canBuySilver == True:
-        return canBuySilver
+        return True
     elif canBuyGold == True:
-        return canBuyGold
+        return True
     elif canBuyPlatinum == True:
-        return canBuyPlatinum
+        return True
     else:
         return False
 
@@ -389,6 +376,7 @@ def applyAwardBuff(tier):
     elif tier == "gold":
         reputation += 20
         marketing_staff += 1
+        genProduction = 2
     
     elif tier == "platinum":
         reputation+= 30
@@ -396,6 +384,7 @@ def applyAwardBuff(tier):
         shop_staff += 2
         if not getCraftTime() in (1, 2):
             manufacturing_staff += 2
+        genProduction = 3
 
     clampReputation()
 
@@ -411,7 +400,7 @@ customers = [createCustomer("normal"), createCustomer("normal")]
 #---------------------------------------start game loop--------------------------------------------------
 
 print()
-print(CYAN+"Tycoon game V26.07.04"+RESET)
+print(CYAN+"Tycoon game V26.08.04"+RESET)
 print()
 print()
 print(BLUE+"-Tutorial-"+RESET)
@@ -564,7 +553,7 @@ while not game_won:
         amount = customer.get("amount", 1)
         print()
         print(
-            row_color+" - ", i, customer['name'], " (",
+            row_color+" [", i, "] ", customer['name'], " (",
             customer['type'], ") wants",
             amount, customer['want'], "((e)s).",
             "They will wait ", customer['patience'], " more turns."+RESET)
@@ -586,7 +575,7 @@ while not game_won:
 
     print(color + "Generators status:", status +RESET)
     print()
-    print(DEFAULT+"Shop staff:", shop_staff, "employees"+RESET)
+    print(DEFAULT+"Shopkeeping staff:", shop_staff, "employees"+RESET)
     print(CYAN+"Customers you can serve per turn:", shop_staff, "."+RESET)
     print(DEFAULT+"Manufacturing staff:", manufacturing_staff, "."+RESET)
     print(CYAN+"Hand-craft time:",
@@ -617,7 +606,7 @@ while not game_won:
                 print(BLUE+"Once your turn starts, you will then be asked what you want to do."+RESET)
                 print(BLUE+"In each turn you will have three 'subturns'. In a subturn, if you wish,"+RESET)
                 print(BLUE+"you can end your turn even if you have not used all three subturns."+RESET)
-                print(BLUE+"This time, select 'buy generators' this time. Let's get a switch generator."+RESET)
+                print(BLUE+"This time, select 'buy generators'. Let's get a switch generator."+RESET)
                 print()
             elif subturn == 2:
                 print()
@@ -632,7 +621,7 @@ while not game_won:
 
         #-----------------------------------------suturn------------------------------------------------
         getPossibleActions()
-        print(DEFAULT+"Your money is: ", money, "."+RESET)
+        print(DEFAULT+"Your money is: ", money, "c."+RESET)
         print()
         print(CYAN+"Choose an action category:"+RESET)
         print()
@@ -646,13 +635,13 @@ while not game_won:
         else:
             print(MAGENTA+" [1] Buy generators"+RESET)
             print(MAGENTA+" [2] Hand crafting"+RESET)
-        if canBuyBronze():
+        if canBuyBronze() and not awards["bronze"]:
             print(BRONZE+" [3] Staff management"+RESET)
-        elif canBuySilver():
+        elif canBuySilver() and not awards["silver"]:
             print(SILVER+" [3] Staff management"+RESET)
-        elif canBuyGold():
+        elif canBuyGold() and not awards["gold"]:
             print(GOLD+" [3] Staff management"+RESET)
-        elif canBuyPlatinum():
+        elif canBuyPlatinum() and not awards["platinum"]:
             print(PLATINUM+" [3] Staff management"+RESET)
         else:
             print(MAGENTA+" [3] Staff management"+RESET)
@@ -681,15 +670,17 @@ while not game_won:
             turnUsed = True
 
         if choice == 1:
+
+                print()
+                print(CYAN+"--- Buy Generators ---"+RESET)
+                print()
+
                 if fullturn == 1:
                     print(BLUE+"-Tutorial-"+RESET)
                     print(BLUE+"Buy a switch generator with your 100 coins."+RESET)
                     print(BLUE+"However, do note: every generator you buy equates to"+RESET)
                     print(BLUE+"more money added to the maintenance fee (in 3 turns)"+RESET)
-
-                print()
-                print(CYAN+"--- Buy Generators ---"+RESET)
-                print()
+                    print()
 
                 if "get_switch_generator" in possibleActions:
                     if fullturn == 1:
@@ -1016,9 +1007,9 @@ while not game_won:
         production_multiplier = 0.5
 
     if generators_active:
-        switch += int(len(switchGenerators) * production_multiplier)
-        xbox += int(len(xboxGenerators) * production_multiplier)
-        playstation += int(len(playstationGenerators) * production_multiplier)
+        switch += (int(len(switchGenerators)* genProduction) * production_multiplier)
+        xbox += (int(len(xboxGenerators)* genProduction) * production_multiplier)
+        playstation += (int(len(playstationGenerators) * genProduction) * production_multiplier)
     
     else:
         print(RED+"⚠Your generators are inactive so could not produce products this turn.⚠"+RESET)
@@ -1048,7 +1039,7 @@ while not game_won:
 )
 
     if marketing_staff > 0:
-        print(BLUE+"📣 Marketing campaign active (+",marketing_staff, " influence)"+RESET)
+        print(MAGENTA+"📣 Marketing campaign active (+",marketing_staff, " influence)📣"+RESET)
 
     print(DEFAULT+"Customers in shop:"+RESET)
     for i, customer in enumerate(customers):
@@ -1059,7 +1050,7 @@ while not game_won:
 
         amount = customer.get("amount", 1)
         print(
-            row_color+" - ", i, "-", customer ['name'],
+            row_color+" [", i, "] ", customer ['name'],
             "(" + customer['type'].capitalize() + ")", " wants: ",
             amount, customer['want'],
             "((e)s) they will wait ", customer['patience'], "turns."+RESET
@@ -1178,7 +1169,7 @@ while not game_won:
                         row_color = DEFAULT if i % 2 == 0 else CYAN
                     amount = customer.get("amount", 1)
                     print(
-                        row_color+" - ", i, "-", customer['name'],
+                        row_color+" [", i, "] ", customer['name'],
                         "(" + customer['type'].capitalize() + ") wants:",
                         amount, customer['want'],
                         ". They will wait", customer['patience'], "turns."+RESET
