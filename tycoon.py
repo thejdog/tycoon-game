@@ -922,7 +922,7 @@ while not game_won:
                     elif sub == 6 and canBuyBronze() and not awards["bronze"]:
                         awards["bronze"] = True
                         applyAwardBuff("bronze")
-                        print(BRONZE+"🏆 Bronze Shop Trophy earned!"+RESET)
+                        print(BRONZE+"🥉 Bronze Shop Trophy earned! 🥉"+RESET)
                         print(BRONZE+"Reputation increased!"+RESET)
                         turnUsed = True
                         break
@@ -930,7 +930,7 @@ while not game_won:
                     elif sub == 7 and canBuySilver() and awards["bronze"]:
                         awards["silver"] = True
                         applyAwardBuff("silver")
-                        print(SILVER+"🏆 Silver Shop Trophy earned!"+RESET)
+                        print(SILVER+"🥈 Silver Shop Trophy earned! 🥈"+RESET)
                         print(SILVER+"Extra shop staff hired for free!"+RESET)
                         turnUsed = True
                         break
@@ -938,7 +938,7 @@ while not game_won:
                     elif sub == 8 and canBuyGold() and awards["silver"]:
                         awards["gold"] = True
                         applyAwardBuff("gold")
-                        print(GOLD+"🏆 Gold Superstore Trophy earned!"+RESET)
+                        print(GOLD+"🥇 Gold Superstore Trophy earned! 🥇"+RESET)
                         print(GOLD+"Your shop is now famous!"+RESET)
                         turnUsed = True
                         break
