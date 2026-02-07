@@ -400,7 +400,7 @@ customers = [createCustomer("normal"), createCustomer("normal")]
 #---------------------------------------start game loop--------------------------------------------------
 
 print()
-print(CYAN+"Tycoon game V26.08.05"+RESET)
+print(CYAN+"Tycoon game V26.08.07"+RESET)
 print()
 print()
 print(BLUE+"-Tutorial-"+RESET)
