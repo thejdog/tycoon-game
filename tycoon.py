@@ -43,9 +43,9 @@ MAGENTA = "\033[35m"
 CYAN = "\033[36m"
 DEFAULT = "\033[39m"
 BRONZE = "\033[38;5;130m"
-SILVER = "\e[0;90m"
+SILVER = "\033[90m"
 GOLD = "\033[38;5;178m"
-PLATINUM = "\033[38;2;229;228;226m"
+PLATINUM = "\033[38;5;178m"
 
 
 #some vars:
@@ -411,8 +411,6 @@ print()
 
 while not game_won:
     #before turn setup:
-    if fullturn % 5 == 3:
-        customers_this_turn = customers_this_turn + 1
 
     fullturn += 1
     for customer in customers[:]:
@@ -481,6 +479,7 @@ while not game_won:
         switch_price = round(switch_price / 5) * 5
         xbox_price = round(xbox_price / 5) * 5
         playstation_price = round(playstation_price / 5) * 5
+        customers_this_turn = customers_this_turn + 1
 
         switch_price = clampPrice(switch_price, switch_min, switch_max)
         xbox_price = clampPrice(xbox_price, xbox_min, xbox_max)
@@ -858,21 +857,24 @@ while not game_won:
             else:
                 print(RED+" [3] Hire marketing staff -", market_cost, "c (too expensive)"+RESET)
             
-            if canBuyAward():
-                print()
-                print(CYAN+"--- Trophies ---"+RESET)
+            print()
+            print(CYAN+"--- Trophies ---"+RESET)
+            print()
 
-                if not awards["bronze"] and canBuyBronze():
-                    print(BRONZE+" [6] Claim Bronze Shop Trophy"+RESET)
+            if not awards["bronze"] and canBuyBronze():
+                print(BRONZE+" [6] Claim Bronze Shop Trophy"+RESET)           
 
-                if awards["bronze"] and not awards["silver"] and canBuySilver():
-                    print(SILVER+" [7] Claim Silver Shop Trophy"+RESET)
+            elif awards["bronze"] and not awards["silver"] and canBuySilver():
+                    print(SILVER+" [7] Claim Silver Shop Trophy"+RESET)                
 
-                if awards["silver"] and not awards["gold"] and canBuyGold():
-                    print(GOLD+" [8] Claim Gold Superstore Trophy"+RESET)
+            elif awards["silver"] and not awards["gold"] and canBuyGold():
+                        print(GOLD+" [8] Claim Gold Superstore Trophy"+RESET)             
 
-                if awards["gold"] and not awards["platinum"] and canBuyPlatinum():
-                    print(PLATINUM+" [9] Claim Platinum Superstore Trophy"+RESET)
+            elif awards["gold"] and not awards["platinum"] and canBuyPlatinum():
+                            print(PLATINUM+" [9] Claim Platinum Superstore Trophy"+RESET)
+            
+            else:
+                print(RED+" No trophies to claim. :("+RESET)
 
             print()
             print(MAGENTA+" [0] Back"+RESET)
