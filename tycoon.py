@@ -59,12 +59,12 @@ money = 100
 orig_money = 0
 orig_sale_money = 0
 
-switch = 0
-xbox = 0
-playstation = 0
-orig_playstations = 0
-orig_switches = 0
-orig_xboxes = 0
+Switch = 0
+Xbox = 0
+Playstation = 0
+orig_Playstations = 0
+orig_Switches = 0
+orig_Xboxes = 0
 
 possibleActions = []
 validAction = False
@@ -74,17 +74,17 @@ customers_this_turn = 2
 vip_served = 0
 non_vip_served = 0
 
-switch_price = 50
-xbox_price = 100
-playstation_price = 150
+Switch_price = 50
+Xbox_price = 100
+Playstation_price = 150
 
-switchGenerators = []
-xboxGenerators = []
-playstationGenerators = []
+SwitchGenerators = []
+XboxGenerators = []
+PlaystationGenerators = []
 genProduction = 1
-switch_maintainance = 10
-xbox_maintainance = 15
-playstation_maintainance = 20
+Switch_maintainance = 10
+Xbox_maintainance = 15
+Playstation_maintainance = 20
 
 generators_active = True
 active_event = None
@@ -98,12 +98,12 @@ manufacturing_base_cost = 50
 marketing_staff = 0
 marketing_base_cost = 75
 
-switch_min = 20
-switch_max = 90
-xbox_min = 50
-xbox_max = 160
-playstation_min = 100
-playstation_max = 215
+Switch_min = 20
+Switch_max = 90
+Xbox_min = 50
+Xbox_max = 160
+Playstation_min = 100
+Playstation_max = 215
 
 GOAL_COST = 1800
 GOAL_NAME = "Platinum Superstore Trophy"
@@ -121,22 +121,22 @@ def getPossibleActions():
     global possibleActions, money
     possibleActions.clear()
     if money >= 100:
-        possibleActions.append ("get_switch_generator")
+        possibleActions.append ("get_Switch_generator")
 
     if money >= 200:
-        possibleActions.append ("get_xbox_generator")
+        possibleActions.append ("get_Xbox_generator")
 
     if money >= 300:
-        possibleActions.append ("get_playstation_generator")
+        possibleActions.append ("get_Playstation_generator")
 
-    if len(switchGenerators) >= 1:
-        possibleActions.append ("make_switch")
+    if len(SwitchGenerators) >= 1:
+        possibleActions.append ("make_Switch")
 
-    if len(xboxGenerators) >= 1:
-        possibleActions.append ("make_xbox")
+    if len(XboxGenerators) >= 1:
+        possibleActions.append ("make_Xbox")
 
-    if len(playstationGenerators) >= 1:
-        possibleActions.append ("make_playstation")
+    if len(PlaystationGenerators) >= 1:
+        possibleActions.append ("make_Playstation")
     
     if money >= getShopStaffCost():
         possibleActions.append("hire_staff")
@@ -144,21 +144,21 @@ def getPossibleActions():
 
 
 def getCustomerWants():
-    global possibleCustomerWants, switchGenerators, xboxGenerators, playstationGenerators
+    global possibleCustomerWants, SwitchGenerators, XboxGenerators, PlaystationGenerators
 
     possibleCustomerWants.clear()
 
-    if "1" in switchGenerators:
-        possibleCustomerWants.append("switch")
+    if "1" in SwitchGenerators:
+        possibleCustomerWants.append("Switch")
     
-    if "1" in xboxGenerators:
-        possibleCustomerWants.append("xbox")
+    if "1" in XboxGenerators:
+        possibleCustomerWants.append("Xbox")
     
-    if "1" in playstationGenerators:
-        possibleCustomerWants.append("playstation")
+    if "1" in PlaystationGenerators:
+        possibleCustomerWants.append("Playstation")
     
-    if not "1" in switchGenerators and not "1" in xboxGenerators and not "1" in playstationGenerators:
-        possibleCustomerWants.append("switch")
+    if not "1" in SwitchGenerators and not "1" in XboxGenerators and not "1" in PlaystationGenerators:
+        possibleCustomerWants.append("Switch")
 
 
 def createCustomer(force_type=None):
@@ -318,45 +318,45 @@ def getMarketingStaffCost():
 
 
 
-def canBuyGoal():
+def canClaimGoal():
     return (
         money >= GOAL_COST and
         vip_served >= 5 and
         non_vip_served >= 20 and
-        len(switchGenerators) >= 1 and
-        len(xboxGenerators) >= 1 and
-        len(playstationGenerators) >= 1 and
+        len(SwitchGenerators) >= 1 and
+        len(XboxGenerators) >= 1 and
+        len(PlaystationGenerators) >= 1 and
         shop_staff >= 4 and
         manufacturing_staff >= 1 and
         marketing_staff >= 1 and
         reputation >= 80
     )
 
-def canBuyBronze():
+def canClaimBronze():
     if money >= 300 and reputation >= 50 and vip_served >= 1 and non_vip_served >= 5:
 
         return True
 
-def canBuySilver():
+def canClaimSilver():
     if money >= 800 and reputation >= 60 and vip_served >= 2 and staff >= 1 and non_vip_served >= 10:
         return True
 
-def canBuyGold():
+def canClaimGold():
     if money >= 1200 and reputation >= 70 and vip_served >= 3 and shop_staff >= 3 and manufacturing_staff >= 1 and marketing_staff >= 1 and  non_vip_served >= 15:
         return True
 
-def canBuyPlatinum():
-    if canBuyGoal():
+def canClaimPlatinum():
+    if canClaimGoal():
         return True
 
-def canBuyAward():
-    if canBuyBronze == True:
+def canClaimAward():
+    if canClaimBronze == True:
         return True
-    elif canBuySilver == True:
+    elif canClaimSilver == True:
         return True
-    elif canBuyGold == True:
+    elif canClaimGold == True:
         return True
-    elif canBuyPlatinum == True:
+    elif canClaimPlatinum == True:
         return True
     else:
         return False
@@ -455,9 +455,9 @@ while not game_won:
         
         print()
 
-    orig_switches = switch
-    orig_xboxes = xbox
-    orig_playstations = playstation
+    orig_Switches = Switch
+    orig_Xboxes = Xbox
+    orig_Playstations = Playstation
     orig_money = money
 
     #-------------maintenenance & generator related stuff--------------
@@ -473,23 +473,23 @@ while not game_won:
     print()
 
     if fullturn % 3 == 1 and not fullturn == 1:
-        switch_price = switch_price + random.randint(-10,10)
-        xbox_price = xbox_price + random.randint(-10,10)
-        playstation_price = playstation_price + random.randint(-10,10)
-        switch_price = round(switch_price / 5) * 5
-        xbox_price = round(xbox_price / 5) * 5
-        playstation_price = round(playstation_price / 5) * 5
+        Switch_price = Switch_price + random.randint(-10,10)
+        Xbox_price = Xbox_price + random.randint(-10,10)
+        Playstation_price = Playstation_price + random.randint(-10,10)
+        Switch_price = round(Switch_price / 5) * 5
+        Xbox_price = round(Xbox_price / 5) * 5
+        Playstation_price = round(Playstation_price / 5) * 5
         customers_this_turn = customers_this_turn + 1
 
-        switch_price = clampPrice(switch_price, switch_min, switch_max)
-        xbox_price = clampPrice(xbox_price, xbox_min, xbox_max)
-        playstation_price = clampPrice(playstation_price, playstation_min, playstation_max)
+        Switch_price = clampPrice(Switch_price, Switch_min, Switch_max)
+        Xbox_price = clampPrice(Xbox_price, Xbox_min, Xbox_max)
+        Playstation_price = clampPrice(Playstation_price, Playstation_min, Playstation_max)
 
     if not generators_active:
         base_maintenance = (
-            len(switchGenerators) * switch_maintainance +
-            len(xboxGenerators) * xbox_maintainance +
-            len(playstationGenerators) * playstation_maintainance
+            len(SwitchGenerators) * Switch_maintainance +
+            len(XboxGenerators) * Xbox_maintainance +
+            len(PlaystationGenerators) * Playstation_maintainance
         )
 
         maintenance = int(base_maintenance * getMaintenanceModifier())
@@ -502,9 +502,9 @@ while not game_won:
 
     if fullturn % 3 == 0:
         base_maintenance = (
-        len(switchGenerators) * switch_maintainance +
-        len(xboxGenerators) * xbox_maintainance +
-        len(playstationGenerators) * playstation_maintainance
+        len(SwitchGenerators) * Switch_maintainance +
+        len(XboxGenerators) * Xbox_maintainance +
+        len(PlaystationGenerators) * Playstation_maintainance
         )
 
         modifier = getMaintenanceModifier()
@@ -541,7 +541,7 @@ while not game_won:
         print()
         print(BLUE+"-Tutorial-"+RESET)
         print(BLUE+"Before a turn you will be notified of how many customers are waiting and what they want."+RESET)
-        print(BLUE+"These ones both want a switch."+RESET)
+        print(BLUE+"These ones both want a Switch."+RESET)
         print()
     
     print(YELLOW+"Customers waiting", len(customers), ":" +RESET)
@@ -560,14 +560,14 @@ while not game_won:
     print()
     print(DEFAULT+"Currently, you have:"+RESET)
     print()
-    print(DEFAULT+" - ",  switch, " switch(es)"+RESET)
-    print(CYAN+" - ", xbox, " xbox(es)"+RESET)
-    print(DEFAULT+" - ", playstation, " playstation(s)"+RESET)
+    print(DEFAULT+" - ",  int(Switch), " Switch(es)"+RESET)
+    print(CYAN+" - ", int(Xbox), " Xbox(es)"+RESET)
+    print(DEFAULT+" - ", int(Playstation), " Playstation(s)"+RESET)
     print()
     print(DEFAULT+"Currently, the generators you have are:"+RESET)
-    print(DEFAULT+" - ", len(switchGenerators), " switch generator(s)"+RESET)
-    print(CYAN+" - ", len(xboxGenerators), " xbox generator(s)"+RESET)
-    print(DEFAULT+" - ", len(playstationGenerators), " playstation generator(s)"+RESET)
+    print(DEFAULT+" - ", len(SwitchGenerators), " Switch generator(s)"+RESET)
+    print(CYAN+" - ", len(XboxGenerators), " Xbox generator(s)"+RESET)
+    print(DEFAULT+" - ", len(PlaystationGenerators), " Playstation generator(s)"+RESET)
 
     status = "ONLINE" if generators_active else "OFFLINE"
     color = GREEN if generators_active else RED
@@ -605,7 +605,7 @@ while not game_won:
                 print(BLUE+"Once your turn starts, you will then be asked what you want to do."+RESET)
                 print(BLUE+"In each turn you will have three 'subturns'. In a subturn, if you wish,"+RESET)
                 print(BLUE+"you can end your turn even if you have not used all three subturns."+RESET)
-                print(BLUE+"This time, select 'buy generators'. Let's get a switch generator."+RESET)
+                print(BLUE+"This time, select 'buy generators'. Let's get a Switch generator."+RESET)
                 print()
             elif subturn == 2:
                 print()
@@ -634,13 +634,13 @@ while not game_won:
         else:
             print(MAGENTA+" [1] Buy generators"+RESET)
             print(MAGENTA+" [2] Hand crafting"+RESET)
-        if canBuyBronze() and not awards["bronze"]:
+        if canClaimBronze() and not awards["bronze"]:
             print(BRONZE+" [3] Staff management"+RESET)
-        elif canBuySilver() and not awards["silver"]:
+        elif canClaimSilver() and not awards["silver"]:
             print(SILVER+" [3] Staff management"+RESET)
-        elif canBuyGold() and not awards["gold"]:
+        elif canClaimGold() and not awards["gold"]:
             print(GOLD+" [3] Staff management"+RESET)
-        elif canBuyPlatinum() and not awards["platinum"]:
+        elif canClaimPlatinum() and not awards["platinum"]:
             print(PLATINUM+" [3] Staff management"+RESET)
         else:
             print(MAGENTA+" [3] Staff management"+RESET)
@@ -676,12 +676,12 @@ while not game_won:
 
                 if fullturn == 1:
                     print(BLUE+"-Tutorial-"+RESET)
-                    print(BLUE+"Buy a switch generator with your 100 coins."+RESET)
+                    print(BLUE+"Buy a Switch generator with your 100 coins."+RESET)
                     print(BLUE+"However, do note: every generator you buy equates to"+RESET)
                     print(BLUE+"more money added to the maintenance fee (in 3 turns)"+RESET)
                     print()
 
-                if "get_switch_generator" in possibleActions:
+                if "get_Switch_generator" in possibleActions:
                     if fullturn == 1:
                         print(BLUE+" [1] Switch generator - 100c"+RESET)
                     else:
@@ -689,12 +689,12 @@ while not game_won:
                 else:
                     print(RED+" [1] Switch generator - 100c (too expensive)"+RESET)
 
-                if "get_xbox_generator" in possibleActions:
+                if "get_Xbox_generator" in possibleActions:
                     print(GREEN+" [2] Xbox generator - 200c"+RESET)
                 else:
                     print(RED+" [2] Xbox generator - 200c (too expensive)"+RESET)
                 
-                if "get_playstation_generator" in possibleActions:
+                if "get_Playstation_generator" in possibleActions:
                     print(GREEN+" [3] Playstation generator - 300c"+RESET)
                 else:
                     print(RED+" [3] Playstation generator - 300c (too expensive)"+RESET)
@@ -712,9 +712,9 @@ while not game_won:
 
                         if sub == 1:
                             if money >= 100:
-                                switchGenerators.append("1")
+                                SwitchGenerators.append("1")
                                 money -= 100
-                                print(GREEN+"Bought a switch generator."+RESET)
+                                print(GREEN+"Bought a Switch generator."+RESET)
                                 turnUsed = True
                                 break
                             else:
@@ -722,9 +722,9 @@ while not game_won:
                         
                         elif sub == 2:
                             if money >= 200:
-                                xboxGenerators.append("1")
+                                XboxGenerators.append("1")
                                 money -= 200
-                                print(GREEN+"Bought an xbox generator."+RESET)
+                                print(GREEN+"Bought an Xbox generator."+RESET)
                                 turnUsed = True
                                 break
                             else:
@@ -732,9 +732,9 @@ while not game_won:
                         
                         elif sub == 3:
                             if money >= 300:
-                                playstationGenerators.append("1")
+                                PlaystationGenerators.append("1")
                                 money -= 300
-                                print(GREEN+"Bought a playstation generator."+RESET)
+                                print(GREEN+"Bought a Playstation generator."+RESET)
                                 turnUsed = True
                                 break
                             else:
@@ -751,29 +751,29 @@ while not game_won:
             if fullturn == 1:
                 print()
                 print(BLUE+"-Tutorial-"+RESET)
-                print(BLUE+"Make a switch."+RESET)
+                print(BLUE+"Make a Switch."+RESET)
                 print()
 
-            if "make_switch" in possibleActions:
+            if "make_Switch" in possibleActions:
                 if fullturn == 1:
-                    print(BLUE+" [1] One switch"+RESET)
+                    print(BLUE+" [1] One Switch"+RESET)
                 else:
-                    print(GREEN+" [1] One switch"+RESET)
+                    print(GREEN+" [1] One Switch"+RESET)
             
             else:
-                print(RED+" [1] switch (requires generators)"+RESET)
+                print(RED+" [1] Switch (requires generators)"+RESET)
 
-            if "make_xbox" in possibleActions:
-                print(GREEN+" [2] One xbox"+RESET)
+            if "make_Xbox" in possibleActions:
+                print(GREEN+" [2] One Xbox"+RESET)
 
             else:
-                print(RED+" [2] xbox (requires generators)"+RESET)
+                print(RED+" [2] Xbox (requires generators)"+RESET)
 
-            if "make_playstation" in possibleActions:
-                print(GREEN+" [3] One playstation"+RESET)
+            if "make_Playstation" in possibleActions:
+                print(GREEN+" [3] One Playstation"+RESET)
             
             else:
-                print(RED+" [3] playstation (requires generators)"+RESET)
+                print(RED+" [3] Playstation (requires generators)"+RESET)
             print()
             print(MAGENTA+" [0] Back"+RESET)
             print()
@@ -793,27 +793,30 @@ while not game_won:
                     if active_event == "shortage":
                         craft_time += 3
 
-                    if productchoice == 1 and "make_switch" in possibleActions:
+                    if productchoice == 1 and "make_Switch" in possibleActions:
                         print(MAGENTA+"making product..."+RESET)
                         time.sleep(craft_time)
-                        switch += 1
-                        print(GREEN+"You now have one more switch"+RESET)
+                        Switch += 1
+                        print(GREEN+"You now have one more Switch"+RESET)
+                        print(DEFAULT+"Total Switches:",  int(Switch), "."+RESET)
                         turnUsed = True
                         break
 
-                    elif productchoice == 2 and "make_xbox" in possibleActions:
+                    elif productchoice == 2 and "make_Xbox" in possibleActions:
                         print(MAGENTA+"making product..."+RESET)
                         time.sleep(craft_time)
-                        xbox += 1
-                        print(GREEN+"You now have one more xbox."+RESET)
+                        Xbox += 1
+                        print(GREEN+"You now have one more Xbox."+RESET)
+                        print(DEFAULT+"Total Xboxes:",  int(Xbox), "."+RESET)
                         turnUsed = True
                         break
 
-                    elif productchoice == 3 and "make_playstation" in possibleActions:
+                    elif productchoice == 3 and "make_Playstation" in possibleActions:
                         print(MAGENTA+"making product..."+RESET)
                         time.sleep(craft_time)
-                        playstation += 1
-                        print(GREEN+"You now have one more playstation."+RESET)
+                        Playstation += 1
+                        print(GREEN+"You now have one more Playstation."+RESET)
+                        print(DEFAULT+"Total Playstations:",  int(Playstation), "."+RESET)
                         turnUsed = True
                         break
                     
@@ -861,16 +864,16 @@ while not game_won:
             print(CYAN+"--- Trophies ---"+RESET)
             print()
 
-            if not awards["bronze"] and canBuyBronze():
+            if not awards["bronze"] and canClaimBronze():
                 print(BRONZE+" [6] Claim Bronze Shop Trophy"+RESET)           
 
-            elif awards["bronze"] and not awards["silver"] and canBuySilver():
+            elif awards["bronze"] and not awards["silver"] and canClaimSilver():
                     print(SILVER+" [7] Claim Silver Shop Trophy"+RESET)                
 
-            elif awards["silver"] and not awards["gold"] and canBuyGold():
+            elif awards["silver"] and not awards["gold"] and canClaimGold():
                         print(GOLD+" [8] Claim Gold Superstore Trophy"+RESET)             
 
-            elif awards["gold"] and not awards["platinum"] and canBuyPlatinum():
+            elif awards["gold"] and not awards["platinum"] and canClaimPlatinum():
                             print(PLATINUM+" [9] Claim Platinum Superstore Trophy"+RESET)
             
             else:
@@ -919,7 +922,7 @@ while not game_won:
                         else:
                             print(RED+"You can't afford that."+RESET)
                     
-                    elif sub == 6 and canBuyBronze() and not awards["bronze"]:
+                    elif sub == 6 and canClaimBronze() and not awards["bronze"]:
                         awards["bronze"] = True
                         applyAwardBuff("bronze")
                         print(BRONZE+"🥉 Bronze Shop Trophy earned! 🥉"+RESET)
@@ -927,7 +930,7 @@ while not game_won:
                         turnUsed = True
                         break
 
-                    elif sub == 7 and canBuySilver() and awards["bronze"]:
+                    elif sub == 7 and canClaimSilver() and awards["bronze"]:
                         awards["silver"] = True
                         applyAwardBuff("silver")
                         print(SILVER+"🥈 Silver Shop Trophy earned! 🥈"+RESET)
@@ -935,7 +938,7 @@ while not game_won:
                         turnUsed = True
                         break
 
-                    elif sub == 8 and canBuyGold() and awards["silver"]:
+                    elif sub == 8 and canClaimGold() and awards["silver"]:
                         awards["gold"] = True
                         applyAwardBuff("gold")
                         print(GOLD+"🥇 Gold Superstore Trophy earned! 🥇"+RESET)
@@ -943,7 +946,7 @@ while not game_won:
                         turnUsed = True
                         break
 
-                    elif sub == 9 and canBuyGoal():
+                    elif sub == 9 and canClaimGoal():
                         awards["platinum"] = True
                         print()
                         print(PLATINUM+"🏆 CONGRATULATIONS! 🏆"+RESET)
@@ -978,7 +981,7 @@ while not game_won:
 
                     
                     else:
-                        if canBuyAward:
+                        if canClaimAward:
                             print(RED+"Invalid. Please enter [0-3] or [6-9]."+RESET)
                         else:
                             print(RED+"Invalid. Please enter [0-3].")
@@ -1009,9 +1012,9 @@ while not game_won:
         production_multiplier = 0.5
 
     if generators_active:
-        switch += (int(len(switchGenerators)* genProduction) * production_multiplier)
-        xbox += (int(len(xboxGenerators)* genProduction) * production_multiplier)
-        playstation += (int(len(playstationGenerators) * genProduction) * production_multiplier)
+        Switch += (int(len(SwitchGenerators)* genProduction) * production_multiplier)
+        Xbox += (int(len(XboxGenerators)* genProduction) * production_multiplier)
+        Playstation += (int(len(PlaystationGenerators) * genProduction) * production_multiplier)
     
     else:
         print(RED+"⚠Your generators are inactive so could not produce products this turn.⚠"+RESET)
@@ -1020,7 +1023,7 @@ while not game_won:
         print()
         print(BLUE+"-Tutorial-"+RESET)
         print(BLUE+"After a turn you can then sell your made products to waiting customers."+RESET)
-        print(BLUE+"Sell two of your switches to these normal customers."+RESET)
+        print(BLUE+"Sell two of your Switches to these normal customers."+RESET)
         print(BLUE+"Some customers will occasionally have a different type such as vips who pay more."+RESET)
         print()
 
@@ -1029,9 +1032,9 @@ while not game_won:
     print()
     print(DEFAULT+"You have:"+RESET)
     print()
-    print(CYAN+" - ", switch, " switch(es)"+RESET)
-    print(DEFAULT+" - ", xbox, " xbox(es)"+RESET)
-    print(CYAN+" - ", playstation, " playstation(s)"+RESET)
+    print(CYAN+" - ", int(Switch), " Switch(es)"+RESET)
+    print(DEFAULT+" - ", int(Xbox), " Xbox(es)"+RESET)
+    print(CYAN+" - ", int(Playstation), " Playstation(s)"+RESET)
 
     customers.sort(
     key=lambda c: (
@@ -1087,26 +1090,26 @@ while not game_won:
             amount = customer.get("amount", 1)
 
             #find base prices
-            if want == "switch":
-                if switch < amount:
-                    print(RED+"You don't have enough switches!"+RESET)
+            if want == "Switch":
+                if Switch < amount:
+                    print(RED+"You don't have enough Switches!"+RESET)
                     continue
-                base_price = switch_price
-                switch -= amount
+                base_price = Switch_price
+                Switch -= amount
             
-            elif want == "xbox":
-                if xbox < amount:
-                    print(RED+"You don't have enough xboxes!"+RESET)
+            elif want == "Xbox":
+                if Xbox < amount:
+                    print(RED+"You don't have enough Xboxes!"+RESET)
                     continue
-                base_price = xbox_price
-                xbox -= amount
+                base_price = Xbox_price
+                Xbox -= amount
 
-            elif want == "playstation":
-                if playstation < amount:
-                    print(RED+"You don't have enough playstations!"+RESET)
+            elif want == "Playstation":
+                if Playstation < amount:
+                    print(RED+"You don't have enough Playstations!"+RESET)
                     continue
-                base_price = playstation_price
-                playstation -= amount
+                base_price = Playstation_price
+                Playstation -= amount
             
             #here is the base total price, code!
             total_price = base_price * amount
@@ -1195,9 +1198,9 @@ while not game_won:
         print(BLUE+"After a turn you will receive a summary of that turn!"+RESET)
         print()
     print(DEFAULT+"Turn ", fullturn, " summary:"+RESET)
-    print(CYAN+ prependPlusSign(int(switch - orig_switches)), " switch(es)"+RESET)
-    print(DEFAULT+ prependPlusSign(int(xbox - orig_xboxes)), " xbox(es)"+RESET)
-    print(CYAN+ prependPlusSign(int(playstation - orig_playstations)), " playstation(s)"+RESET)
+    print(CYAN+ prependPlusSign(int(Switch - orig_Switches)), " Switch(es)"+RESET)
+    print(DEFAULT+ prependPlusSign(int(Xbox - orig_Xboxes)), " Xbox(es)"+RESET)
+    print(CYAN+ prependPlusSign(int(Playstation - orig_Playstations)), " Playstation(s)"+RESET)
     print(DEFAULT+"-", orig_money - orig_sale_money, " spent"+RESET)
     print(CYAN+"+", money - orig_sale_money, " sales"+RESET)
 
