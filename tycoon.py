@@ -1262,7 +1262,6 @@ while not game_won:
     
     time.sleep(5)
 
-
     if active_event is not None:
         event_turns_left -= 1
 
