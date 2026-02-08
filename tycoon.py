@@ -362,7 +362,7 @@ def canBuyAward():
         return False
 
 def applyAwardBuff(tier):
-    global reputation, shop_staff
+    global reputation, shop_staff, manufacturing_staff, genProduction
 
     if tier == "bronze":
         reputation += 10
@@ -451,7 +451,7 @@ while not game_won:
         elif roll == 3:
             active_event = "journalist"
             event_turns_left = random.randint(3, 4)
-            print(YELLOW+" 🗞️ A jouralist enters the shop. They will interview your customers. 🗞️"+RESET)
+            print(YELLOW+" 🗞️  A jouralist enters the shop. They will interview your customers. 🗞️"+RESET)
         
         print()
 
@@ -1041,7 +1041,7 @@ while not game_won:
 )
 
     if marketing_staff > 0:
-        print(MAGENTA+"📣 Marketing campaign active (+",marketing_staff, " influence)📣"+RESET)
+        print(MAGENTA+"📣 Marketing campaign active (+",marketing_staff, " influence) 📣"+RESET)
 
     print(DEFAULT+"Customers in shop:"+RESET)
     for i, customer in enumerate(customers):
