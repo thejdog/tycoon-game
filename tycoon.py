@@ -481,7 +481,8 @@ while not game_won:
         Switch_price = round(Switch_price / 5) * 5
         Xbox_price = round(Xbox_price / 5) * 5
         Playstation_price = round(Playstation_price / 5) * 5
-        customers_this_turn = customers_this_turn + 1
+        if not customers_this_turn == 10:
+            customers_this_turn = customers_this_turn + 1
 
         Switch_price = clampPrice(Switch_price, Switch_min, Switch_max)
         Xbox_price = clampPrice(Xbox_price, Xbox_min, Xbox_max)
@@ -844,7 +845,9 @@ while not game_won:
             print(CYAN+"Manufacturing staff:", manufacturing_staff, "." +RESET)
             print(DEFAULT+"Marketing staff:", marketing_staff, "." +RESET)
             print()
-            if money >= shop_cost:
+            if shop_staff == 10:
+                print(YELLOW+"[1] Hire shopkeeping staff - MAXED OUT (customers 10)"+RESET)
+            elif money >= shop_cost:
                 print(GREEN+" [1] Hire shopkeeping staff -", shop_cost, "c"+RESET)
             else:
                 print(RED+" [1] Hire shopkeeping staff -", shop_cost, "c (too expensive)"+RESET)
@@ -857,7 +860,9 @@ while not game_won:
             else:
                 print(RED+" [2] Hire manufacturing staff -", manu_cost, "c (too expensive)"+RESET)
             
-            if money >= market_cost:
+            if marketing_staff == 12:
+                print(YELLOW+"[3] Hire marketing staff - MAXED OUT (influence +13)"+RESET)
+            elif money >= market_cost:
                 print(GREEN+" [3] Hire marketing staff -", market_cost, "c"+RESET)
             else:
                 print(RED+" [3] Hire marketing staff -", market_cost, "c (too expensive)"+RESET)
@@ -893,7 +898,9 @@ while not game_won:
                         break
 
                     elif sub == 1:
-                        if money >= shop_cost:
+                        if getCraftTime() == 1:
+                            print(YELLOW+"You already have the maximum amount of shopkeeping staff."+RESET)
+                        elif money >= shop_cost:
                             money -= shop_cost
                             shop_staff += 1
                             print(GREEN+"You hired a shopkeeping staff member!"+RESET)
@@ -915,7 +922,9 @@ while not game_won:
                             print(RED+"You can't afford that."+RESET)
                     
                     elif sub == 3:
-                        if money >= market_cost:
+                        if marketing_staff == 12:
+                            print(YELLOW+"Your marketing campaign is already fully optimised."+RESET)
+                        elif money >= market_cost:
                             money -= market_cost
                             marketing_staff += 1
                             print(GREEN+"You hired marketing staff! More VIPs may shop here."+RESET)
