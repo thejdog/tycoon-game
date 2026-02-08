@@ -362,7 +362,7 @@ def canBuyAward():
         return False
 
 def applyAwardBuff(tier):
-    global reputation, shop_staff, manufacturing_staff, genProduction
+    global reputation, shop_staff, manufacturing_staff, genProduction, marketing_staff
 
     if tier == "bronze":
         reputation += 10
