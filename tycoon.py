@@ -927,6 +927,7 @@ while not game_won:
                         applyAwardBuff("bronze")
                         print(BRONZE+"🥉 Bronze Shop Trophy earned! 🥉"+RESET)
                         print(BRONZE+"Reputation increased!"+RESET)
+                        time.sleep(3)
                         turnUsed = True
                         break
 
@@ -935,6 +936,7 @@ while not game_won:
                         applyAwardBuff("silver")
                         print(SILVER+"🥈 Silver Shop Trophy earned! 🥈"+RESET)
                         print(SILVER+"Extra shop staff hired for free!"+RESET)
+                        time.sleep(4)
                         turnUsed = True
                         break
 
@@ -943,6 +945,7 @@ while not game_won:
                         applyAwardBuff("gold")
                         print(GOLD+"🥇 Gold Superstore Trophy earned! 🥇"+RESET)
                         print(GOLD+"Your shop is now famous!"+RESET)
+                        time.sleep(3)
                         turnUsed = True
                         break
 
@@ -964,6 +967,7 @@ while not game_won:
                                     print(PLATINUM+"I hope you have a nice time here!")
                                     print(PLATINUM+"Thanks for playing!"+RESET)
                                     print()
+                                    time.sleep(6)
                                     game_won = True
                                     break
                                 else:
@@ -971,6 +975,7 @@ while not game_won:
                                     print(PLATINUM+"I knew you'd stay, master of business!"+RESET)
                                     print(PLATINUM+"With this award you will receive many buffs!"+RESET)
                                     print(PLATINUM+"Enjoy your free play now!"+RESET)
+                                    time.sleep(6)
                                     break
                             except:
                                 print(RED+"That is invalid, master of business. Please try again")
@@ -1225,34 +1230,37 @@ while not game_won:
     print(DEFAULT+"Shop award rank:"+RESET)
 
     if awards["platinum"]:
-        print(PLATINUM+"💎 Platinum Superstore Trophy — LEGENDARY SHOP 💎"+RESET)
-        print(PLATINUM+"💎Well done on your big achievement!!!💎"+RESET)
+        print(PLATINUM+"💎 Platinum Superstore Trophy — LEGENDARY SHOP!!! 💎"+RESET)
+        print(PLATINUM+"💎 Well done on your big achievement!!! 💎"+RESET)
+        print(PLATINUM+"💎 You have reached the highest rank!!! 💎")
 
     elif awards["gold"]:
         print(GOLD+"🥇 Gold Superstore Trophy — Elite business 🥇"+RESET)
         print(GOLD+"Platinum trophy requirements:"+RESET)
-        print(GOLD+" -",GOAL_COST, "c")
-        print(GOLD+" - Rep: 80 or more")
+        print(GOLD+" -",GOAL_COST, "c"+RESET)
+        print(GOLD+" - Rep: 80 or more"+RESET)
+        print(GOLD+" - One of every generator"+RESET)
 
     elif awards["silver"]:
         print(SILVER+"🥈 Silver Shop Trophy — Growing success 🥈"+RESET)
         print(SILVER+"Gold trophy requirements:"+RESET)
-        print(SILVER+" - 1200c")
-        print(SILVER+" - Rep: 70 or more")
+        print(SILVER+" - 1200c"+RESET)
+        print(SILVER+" - Rep: 70 or more"+RESET)
+        print(SILVER+" - One of every staff member"+RESET)
 
     elif awards["bronze"]:
         print(BRONZE+"🥉 Bronze Shop Trophy — On the rise 🥉"+RESET)
         print(BRONZE+"Silver trophy requirements:"+RESET)
-        print(BRONZE+" - 800c")
-        print(BRONZE+" - 60 rep")
+        print(BRONZE+" - 800c"+RESET)
+        print(BRONZE+" - 60 rep"+RESET)
 
     else:
         print(DEFAULT+"No trophies yet — keep building your shop!"+RESET)
         print(DEFAULT+"First trophy requirements:"+RESET)
-        print(DEFAULT+" - 300 or more coins")
+        print(DEFAULT+" - 300 or more coins"+RESET)
         print(DEFAULT+" - reputation of 50 or above"+RESET)
     
-
+    time.sleep(5)
 
 
     if active_event is not None:
