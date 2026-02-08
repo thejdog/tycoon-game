@@ -17,13 +17,13 @@ COMMON_NAMES = [
 ]
 
 VIP_NAMES = [
-    "Victoria", "Sebastian", "Alexander", "Isabella",
+    "Victoria", "Sebastian", "Alexander", "Isabella", "Emperor Edus",
     "Theodore", "Charlotte", "Charles", "Royal Reubus", "King Jordus",
     "Lord Jensus", "Admiral Atticus", "Duke Deacus", "Reverend Rupert"
 ]
 
 IMPATIENT_NAMES = [
-    "Brad", "Kyle", "Derek", "Tina", "Sharon", "Eden",
+    "Brad", "Kyle", "Derek", "Tina", "Sharon",
     "Dolly", "Darren"
 ]
 
@@ -402,7 +402,7 @@ customers = [createCustomer("normal"), createCustomer("normal")]
 #---------------------------------------start game loop--------------------------------------------------
 
 print()
-print(CYAN+"Tycoon game V26.08.07"+RESET)
+print(CYAN+"Tycoon game V26.10.03"+RESET)
 print()
 print()
 print(BLUE+"-Tutorial-"+RESET)
