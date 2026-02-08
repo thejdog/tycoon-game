@@ -972,6 +972,7 @@ while not game_won:
                                     break
                                 else:
                                     applyAwardBuff("platinum")
+                                    print()
                                     print(PLATINUM+"I knew you'd stay, master of business!"+RESET)
                                     print(PLATINUM+"With this award you will receive many buffs!"+RESET)
                                     print(PLATINUM+"Enjoy your free play now!"+RESET)
