@@ -238,10 +238,12 @@ def getCustomerName(customer_type):
     pool = COMMON_NAMES.copy()
 
     if customer_type == "vip":
+        pool.clear()
         pool += VIP_NAMES
     elif customer_type == "impatient":
         pool += IMPATIENT_NAMES
     elif customer_type == "bulk":
+        pool.clear()
         pool += BULK_NAMES
 
     return random.choice(pool)
