@@ -9,22 +9,22 @@ import time
 
 COMMON_NAMES = [
     "Alex", "Jamie", "Sam", "Taylor", "Jago",
-    "Chris", "Morgan", "Riley", "Casey", "Avery",
-    "Bob", "Timothy", "Jerry", "Tom", "Polly",
-    "Anthony", "Thomas", "Amelia", "Olive", "Liam",
-    "Alex", "Steve", "Mia", "Summer", "Daniel", "Guy"
-    
+    "Chris", "Morgan", "Riley", "Casey",
+    "Bob", "Timothy", "Jerry", "Tom", "Avery",
+    "Anthony", "Thomas", "Liam", "Polly",
+    "Alex", "Steve", "Mia", "Summer", "Guy"    
 ]
 
+
 VIP_NAMES = [
-    "Victoria", "Sebastian", "Alexander", "Isabella", "Emperor Edus",
-    "Theodore", "Charlotte", "Charles", "Royal Reubus", "King Jordus",
-    "Lord Jensus", "Admiral Atticus", "Duke Deacus", "Reverend Rupert"
+     "Emperor Edus", "Lord Jensus", "Dictator Daniel",
+     "Charles", "Royal Reubus", "King Jordus", "Official Oliver",
+     "Admiral Atticus", "Duke Deacus", "Reverend Rupert"
 ]
 
 IMPATIENT_NAMES = [
     "Brad", "Kyle", "Derek", "Tina", "Sharon",
-    "Dolly", "Darren"
+    "Dolly", "Darren", "Amelia"
 ]
 
 BULK_NAMES = [
@@ -123,10 +123,10 @@ def getPossibleActions():
     if money >= 100:
         possibleActions.append ("get_Switch_generator")
 
-    if money >= 200:
+    if money >= 200 and len(SwitchGenerators) >=1:
         possibleActions.append ("get_Xbox_generator")
 
-    if money >= 300:
+    if money >= 300 and len(XboxGenerators) >=1:
         possibleActions.append ("get_Playstation_generator")
 
     if len(SwitchGenerators) >= 1:
@@ -170,12 +170,12 @@ def createCustomer(force_type=None):
     bulk_weight = 10
 
     # marketing affects it though!
-    vip_weight += marketing_staff * 4
+    vip_weight += marketing_staff * 5
     bulk_weight += marketing_staff * 2
 
     #cap on chance(We don't want it to go TOO high!!!)
     vip_weight = min(vip_weight, 60)
-    bulk_weight = min(bulk_weight, 35)
+    bulk_weight = min(bulk_weight, 30)
 
     if force_type == "normal":
         customer_type = "normal"
@@ -211,7 +211,7 @@ def createCustomer(force_type=None):
 
     bulk_amount = 1
     if customer_type == "bulk":
-        bulk_amount = random.randint(2, 3)
+        bulk_amount = random.randint(2, 4)
 
     name = getCustomerName(customer_type)
 
@@ -241,6 +241,7 @@ def getCustomerName(customer_type):
         pool.clear()
         pool += VIP_NAMES
     elif customer_type == "impatient":
+        pool.clear()
         pool += IMPATIENT_NAMES
     elif customer_type == "bulk":
         pool.clear()
@@ -331,7 +332,7 @@ def canClaimGoal():
         shop_staff >= 4 and
         manufacturing_staff >= 1 and
         marketing_staff >= 1 and
-        reputation >= 80
+        reputation >= 100
     )
 
 def canClaimBronze():
@@ -340,11 +341,11 @@ def canClaimBronze():
         return True
 
 def canClaimSilver():
-    if money >= 800 and reputation >= 60 and vip_served >= 2 and staff >= 1 and non_vip_served >= 10:
+    if money >= 800 and reputation >= 65 and vip_served >= 2 and staff >= 1 and non_vip_served >= 10:
         return True
 
 def canClaimGold():
-    if money >= 1200 and reputation >= 70 and vip_served >= 3 and shop_staff >= 3 and manufacturing_staff >= 1 and marketing_staff >= 1 and  non_vip_served >= 15:
+    if money >= 1200 and reputation >= 80 and vip_served >= 3 and shop_staff >= 3 and manufacturing_staff >= 1 and marketing_staff >= 1 and  non_vip_served >= 15:
         return True
 
 def canClaimPlatinum():
@@ -402,7 +403,7 @@ customers = [createCustomer("normal"), createCustomer("normal")]
 #---------------------------------------start game loop--------------------------------------------------
 
 print()
-print(CYAN+"Tycoon game V26.10.03"+RESET)
+print(CYAN+"Tycoon game V26.10.04"+RESET)
 print()
 print()
 print(BLUE+"-Tutorial-"+RESET)
@@ -639,11 +640,11 @@ while not game_won:
             print(MAGENTA+" [2] Hand crafting"+RESET)
         if canClaimBronze() and not awards["bronze"]:
             print(BRONZE+" [3] Staff management"+RESET)
-        elif canClaimSilver() and not awards["silver"]:
+        elif canClaimSilver() and not awards["silver"] and awards["bronze"]:
             print(SILVER+" [3] Staff management"+RESET)
-        elif canClaimGold() and not awards["gold"]:
+        elif canClaimGold() and not awards["gold"] and awards["silver"]:
             print(GOLD+" [3] Staff management"+RESET)
-        elif canClaimPlatinum() and not awards["platinum"]:
+        elif canClaimPlatinum() and not awards["platinum"] and awards["gold"]:
             print(PLATINUM+" [3] Staff management"+RESET)
         else:
             print(MAGENTA+" [3] Staff management"+RESET)
@@ -724,22 +725,30 @@ while not game_won:
                                 print(RED+"You can't afford that."+RESET)
                         
                         elif sub == 2:
-                            if money >= 200:
+                            if money >= 200 and "get_Xbox_generator" in possibleActions:
                                 XboxGenerators.append("1")
                                 money -= 200
                                 print(GREEN+"Bought an Xbox generator."+RESET)
                                 turnUsed = True
                                 break
+
+                            elif money >= 200 and not "get_Xbox_generator" in possibleActions:
+                                print(YELLOW+"You need a Switch generator first."+RESET)
+                            
                             else:
                                 print(RED+"You can't afford that."+RESET)
                         
                         elif sub == 3:
-                            if money >= 300:
+                            if money >= 300 and "get_Playstation_generator" in possibleActions:
                                 PlaystationGenerators.append("1")
                                 money -= 300
                                 print(GREEN+"Bought a Playstation generator."+RESET)
                                 turnUsed = True
                                 break
+
+                            elif money>= 300 and not "get_Playstation_generator" in possibleActions:
+                                print(YELLOW+"You need an Xbox generator first."+RESET)
+
                             else:
                                 print(RED+"You can't afford that."+RESET)
                     except:
@@ -801,7 +810,7 @@ while not game_won:
                         time.sleep(craft_time)
                         Switch += 1
                         print(GREEN+"You now have one more Switch"+RESET)
-                        print(DEFAULT+"Total Switches:",  int(Switch), "."+RESET)
+                        print(GREEN+"Total Switches:",  int(Switch), "."+RESET)
                         turnUsed = True
                         break
 
@@ -810,7 +819,7 @@ while not game_won:
                         time.sleep(craft_time)
                         Xbox += 1
                         print(GREEN+"You now have one more Xbox."+RESET)
-                        print(DEFAULT+"Total Xboxes:",  int(Xbox), "."+RESET)
+                        print(GREEN+"Total Xboxes:",  int(Xbox), "."+RESET)
                         turnUsed = True
                         break
 
@@ -819,7 +828,7 @@ while not game_won:
                         time.sleep(craft_time)
                         Playstation += 1
                         print(GREEN+"You now have one more Playstation."+RESET)
-                        print(DEFAULT+"Total Playstations:",  int(Playstation), "."+RESET)
+                        print(GREEN+"Total Playstations:",  int(Playstation), "."+RESET)
                         turnUsed = True
                         break
                     
@@ -860,7 +869,7 @@ while not game_won:
             else:
                 print(RED+" [2] Hire manufacturing staff -", manu_cost, "c (too expensive)"+RESET)
             
-            if marketing_staff == 12:
+            if marketing_staff == 10:
                 print(YELLOW+"[3] Hire marketing staff - MAXED OUT (influence +13)"+RESET)
             elif money >= market_cost:
                 print(GREEN+" [3] Hire marketing staff -", market_cost, "c"+RESET)
@@ -898,7 +907,7 @@ while not game_won:
                         break
 
                     elif sub == 1:
-                        if getCraftTime() == 1:
+                        if shop_staff == 10:
                             print(YELLOW+"You already have the maximum amount of shopkeeping staff."+RESET)
                         elif money >= shop_cost:
                             money -= shop_cost
@@ -922,8 +931,8 @@ while not game_won:
                             print(RED+"You can't afford that."+RESET)
                     
                     elif sub == 3:
-                        if marketing_staff == 12:
-                            print(YELLOW+"Your marketing campaign is already fully optimised."+RESET)
+                        if marketing_staff == 10:
+                            print(YELLOW+"Your marketing campaign is already fully optimised. (Influence: 10)"+RESET)
                         elif money >= market_cost:
                             money -= market_cost
                             marketing_staff += 1
@@ -1149,16 +1158,16 @@ while not game_won:
             money += total_price
             orig_reputation = reputation
             if customer['type'] == "normal":
-                reputation += random.randint(1,3)
+                reputation += random.randint(1,2)
             
             elif customer['type'] == "impatient":
                 reputation += random.randint(0,1)
 
             elif customer['type'] == "vip":
-                reputation += random.randint(3,6)
+                reputation += random.randint(2,4)
             
             elif customer['type'] == "bulk":
-                reputation += random.randint(1,3)
+                reputation += random.randint(1,2)
 
             if active_event == "journalist":
                 reputation += reputation - orig_reputation
@@ -1250,29 +1259,27 @@ while not game_won:
         print(GOLD+"🥇 Gold Superstore Trophy — Elite business 🥇"+RESET)
         print(GOLD+"Platinum trophy requirements:"+RESET)
         print(GOLD+" -",GOAL_COST, "c"+RESET)
-        print(GOLD+" - Rep: 80 or more"+RESET)
         print(GOLD+" - One of every generator"+RESET)
+        print(GOLD+" - Rep: 100 (max)"+RESET)
 
     elif awards["silver"]:
         print(SILVER+"🥈 Silver Shop Trophy — Growing success 🥈"+RESET)
         print(SILVER+"Gold trophy requirements:"+RESET)
         print(SILVER+" - 1200c"+RESET)
-        print(SILVER+" - Rep: 70 or more"+RESET)
+        print(SILVER+" - Rep: 70"+RESET)
         print(SILVER+" - One of every staff member"+RESET)
 
     elif awards["bronze"]:
         print(BRONZE+"🥉 Bronze Shop Trophy — On the rise 🥉"+RESET)
         print(BRONZE+"Silver trophy requirements:"+RESET)
         print(BRONZE+" - 800c"+RESET)
-        print(BRONZE+" - 60 rep"+RESET)
+        print(BRONZE+" - Rep: 60"+RESET)
 
     else:
         print(DEFAULT+"No trophies yet — keep building your shop!"+RESET)
         print(DEFAULT+"First trophy requirements:"+RESET)
         print(DEFAULT+" - 300 or more coins"+RESET)
         print(DEFAULT+" - reputation of 50 or above"+RESET)
-    
-    time.sleep(5)
 
     if active_event is not None:
         event_turns_left -= 1
@@ -1298,6 +1305,6 @@ while not game_won:
     print()
     print()
     print(CYAN+"-------------------------------------------------------"+RESET)
-    time.sleep(7)
+    time.sleep(8)
     print()
     print()
