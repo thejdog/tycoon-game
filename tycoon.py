@@ -18,7 +18,7 @@ COMMON_NAMES = [
 
 VIP_NAMES = [
      "Emperor Edus", "Lord Jensus", "Dictator Daniel",
-     "Charles", "Royal Reubus", "King Jordus", "Official Oliver",
+     "Charles", "Royal Reubus", "King Jordus", "Officer Oliver",
      "Admiral Atticus", "Duke Deacus", "Reverend Rupert"
 ]
 
@@ -195,7 +195,7 @@ def createCustomer(force_type=None):
         )[0]
     
     if customer_type == "impatient":
-        patience = random.randint(1,2)
+        patience = 1
 
     elif customer_type == "vip":
         patience = random.randint(3,5)
@@ -285,7 +285,7 @@ def getMaintenanceModifier():
 
 
 def getManufacturingStaffCost():
-    #price of staff: 1st: 50, 2nd: 100, 3rd: 200, 4th: 300, 5th: 400.
+    #price of staff: 1st: 50, 2nd: 100, 3rd: 250, 4th: 400, 5th: 550.
     if manufacturing_staff == 0:
         return 50
     
@@ -293,10 +293,10 @@ def getManufacturingStaffCost():
         return 100
     
     else:
-        return 100 * manufacturing_staff
+        return (150 * manufacturing_staff) - 50
 
 def getShopStaffCost():
-    #price: 1st: 50, 2nd: 100, 3rd: 200, 4th: 300, 5th: 400.
+    #price: 1st: 50, 2nd: 100, 3rd: 200, 4th: 300, 5th: 400...
     if shop_staff == 2:
         return 50
     
@@ -304,7 +304,10 @@ def getShopStaffCost():
         return 100
     
     else:
-        return 100 * (shop_staff - 2)
+        temp =  100 * (shop_staff - 2)
+        if temp >= 500:
+            temp = 500
+        return temp
 
 def getCraftTime():
     base_craft_time = 6
@@ -317,7 +320,10 @@ def getMarketingStaffCost():
     elif marketing_staff == 1:
         return 150
     else:
-        return 150 * marketing_staff
+        temp2 = 150 * marketing_staff
+        if temp2 >= 600:
+            temp2 = 600
+        return temp2
 
 
 
@@ -403,7 +409,7 @@ customers = [createCustomer("normal"), createCustomer("normal")]
 #---------------------------------------start game loop--------------------------------------------------
 
 print()
-print(CYAN+"Tycoon game V26.11.02"+RESET)
+print(CYAN+"Tycoon game V26.11.03"+RESET)
 print()
 print()
 print(BLUE+"-Tutorial-"+RESET)
@@ -439,21 +445,21 @@ while not game_won:
     
         # roll 'dice' for new event ONLY if no events are already active
     if active_event is None and fullturn > 1:
-        roll = random.randint(1, 30)
+        roll = random.randint(1, 20)
 
         if roll == 1:
             active_event = "shortage"
-            event_turns_left = random.randint(3, 4)
+            event_turns_left = random.randint(2, 4)
             print(RED+"⚠ Supply shortage! Production halved. ⚠"+RESET)
 
         elif roll == 2:
             active_event = "sale"
-            event_turns_left = random.randint(3, 4)
+            event_turns_left = random.randint(2, 4)
             print(GREEN+"🔥 Sale day! Crowds flood the shop! 🔥"+RESET)
         
         elif roll == 3:
             active_event = "journalist"
-            event_turns_left = random.randint(3, 4)
+            event_turns_left = random.randint(2, 4)
             print(YELLOW+" 🗞️  A jouralist enters the shop. They will interview your customers. 🗞️"+RESET)
         
         print()
@@ -1142,7 +1148,7 @@ while not game_won:
 
             #don't forget to add type multipliers
             if customer["type"] == "vip":
-                total_price = int(total_price * 1.4)
+                total_price = int(total_price * (1 + (customer['patience'] / 10)))
 
             elif customer["type"] == "impatient":
                 total_price = int(total_price * 0.9)
