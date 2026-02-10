@@ -105,7 +105,7 @@ Xbox_max = 160
 Playstation_min = 100
 Playstation_max = 215
 
-GOAL_COST = 1800
+GOAL_COST = 2000
 GOAL_NAME = "Platinum Superstore Trophy"
 game_won = False
 awards = {
@@ -342,16 +342,16 @@ def canClaimGoal():
     )
 
 def canClaimBronze():
-    if money >= 300 and reputation >= 50 and vip_served >= 1 and non_vip_served >= 5:
+    if money >= 400 and reputation >= 50 and vip_served >= 1 and non_vip_served >= 5:
 
         return True
 
 def canClaimSilver():
-    if money >= 800 and reputation >= 65 and vip_served >= 2 and staff >= 1 and non_vip_served >= 10:
+    if money >= 900 and reputation >= 65 and vip_served >= 2 and staff >= 1 and non_vip_served >= 10:
         return True
 
 def canClaimGold():
-    if money >= 1200 and reputation >= 80 and vip_served >= 3 and shop_staff >= 3 and manufacturing_staff >= 1 and marketing_staff >= 1 and  non_vip_served >= 15:
+    if money >= 1300 and reputation >= 80 and vip_served >= 3 and shop_staff >= 3 and manufacturing_staff >= 1 and marketing_staff >= 1 and  non_vip_served >= 15:
         return True
 
 def canClaimPlatinum():
@@ -1271,20 +1271,20 @@ while not game_won:
     elif awards["silver"]:
         print(SILVER+"🥈 Silver Shop Trophy — Growing success 🥈"+RESET)
         print(SILVER+"Gold trophy requirements:"+RESET)
-        print(SILVER+" - 1200c"+RESET)
+        print(SILVER+" - 1300c"+RESET)
         print(SILVER+" - Rep: 70"+RESET)
         print(SILVER+" - One of every staff member"+RESET)
 
     elif awards["bronze"]:
         print(BRONZE+"🥉 Bronze Shop Trophy — On the rise 🥉"+RESET)
         print(BRONZE+"Silver trophy requirements:"+RESET)
-        print(BRONZE+" - 800c"+RESET)
+        print(BRONZE+" - 900c"+RESET)
         print(BRONZE+" - Rep: 60"+RESET)
 
     else:
         print(DEFAULT+"No trophies yet — keep building your shop!"+RESET)
         print(DEFAULT+"First trophy requirements:"+RESET)
-        print(DEFAULT+" - 300 or more coins"+RESET)
+        print(DEFAULT+" - 400 or more coins"+RESET)
         print(DEFAULT+" - reputation of 50 or above"+RESET)
 
     if active_event is not None:
