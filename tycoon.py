@@ -1275,13 +1275,22 @@ while not game_won:
     else:
         print(DEFAULT+"Shop reputation:", reputation, "/ 100"+RESET)
     if reputation >= 100:
-        print(PLATINUM+"Customers talk about your shop across the city!"+RESET)
+        print(GOLD+"Customers talk about your shop across the city!"+RESET)
 
     elif reputation >= 80 and reputation < 100:
         print(GREEN+"Your shop is well respected! VIPs love it here."+RESET)
 
     elif reputation <= 20:
         print(RED+"Your shop has a bad reputation… customers are more impatient."+RESET)
+    
+    print()
+    
+    if money <= 99:
+        print(YELLOW+"Money:", money, "c. Keep saving up!"+RESET)
+    elif money >= 100 and money <= 750:
+        print(GREEN+"Money:", money, "c."+RESET)
+    elif money >= 750:
+        print(GOLD+"Money:", money, "c. You are rich!"+RESET)
     
         
     
@@ -1310,13 +1319,13 @@ while not game_won:
     elif awards["bronze"]:
         print(BRONZE+"🥉 Bronze Shop Trophy — On the rise 🥉"+RESET)
         print(BRONZE+"Silver trophy requirements:"+RESET)
-        print(BRONZE+" - 900c"+RESET)
+        print(BRONZE+" - 800c"+RESET)
         print(BRONZE+" - Rep: 60"+RESET)
 
     else:
         print(DEFAULT+"No trophies yet — keep building your shop!"+RESET)
         print(DEFAULT+"First trophy requirements:"+RESET)
-        print(DEFAULT+" - 400 or more coins"+RESET)
+        print(DEFAULT+" - 300 or more coins"+RESET)
         print(DEFAULT+" - reputation of 50 or above"+RESET)
 
     if active_event is not None:
