@@ -54,6 +54,7 @@ reputation = 50
 
 fullturn = 0
 subturn = 0
+tutorial = False
 
 money = 100
 orig_money = 0
@@ -411,14 +412,33 @@ customers = [createCustomer("normal"), createCustomer("normal")]
 print()
 print(CYAN+"Tycoon game V26.11.03"+RESET)
 print()
+print(MAGENTA+"Would you like to have the tutorial for your first turn? [Yes - 1] [No - 2]"+RESET)
 print()
-print(BLUE+"-Tutorial-"+RESET)
-print(BLUE+"Welcome to my tycoon game!"+RESET)
-print(BLUE+"I'll be teaching you how to play for your first turn!"+RESET)
-print(BLUE+"Now, without further ado lets get going! :)"+RESET)
+while True:
+    try:
+        tutorialOnOff = int(input(MAGENTA+"> "))
+        if tutorialOnOff == 1:
+            tutorial = True
+            break
+        elif tutorialOnOff == 2:
+            tutorial = False
+            break
+        else:
+            print(RED+"Invalid. Please enter [1-2]."+RESET)
+    except:
+        print(RED+"Invalid. Please try again."+RESET)
+
+if tutorial == True:
+    print()
+    print(BLUE+"-Tutorial active-"+RESET)
+    print()
+else:
+    print()
+    print(BLUE+"-Tutorial inactive-"+RESET)
+    print()
 print()
 print(CYAN+"-------------------------------------------------------"+RESET)
-time.sleep(3)
+time.sleep(1)
 
 while not game_won:
     #before turn setup:
@@ -555,7 +575,7 @@ while not game_won:
             for b in range(customers_this_turn - len(customers)):
                 addCustomer()
 
-    if fullturn == 1:
+    if tutorial == True:
         print()
         print(BLUE+"-Tutorial-"+RESET)
         print(BLUE+"Before a turn you will be notified of how many customers are waiting and what they want."+RESET)
@@ -616,7 +636,7 @@ while not game_won:
         print(CYAN+"----------------------subturn ", subturn, "------------------------"+RESET)
         print()
 
-        if fullturn == 1:
+        if tutorial == True:
             if subturn == 1:
                 print()
                 print(BLUE+"-Tutorial-"+RESET)
@@ -642,7 +662,7 @@ while not game_won:
         print()
         print(CYAN+"Choose an action category:"+RESET)
         print()
-        if fullturn == 1:
+        if tutorial == True:
             if subturn == 1:
                 print(BLUE+" [1] Buy generators"+RESET)
                 print(MAGENTA+" [2] Hand crafting"+RESET)
@@ -692,7 +712,7 @@ while not game_won:
                 print(CYAN+"--- Buy Generators ---"+RESET)
                 print()
 
-                if fullturn == 1:
+                if tutorial == True:
                     print(BLUE+"-Tutorial-"+RESET)
                     print(BLUE+"Buy a Switch generator with your 100 coins."+RESET)
                     print(BLUE+"However, do note: every generator you buy equates to"+RESET)
@@ -700,7 +720,7 @@ while not game_won:
                     print()
 
                 if "get_Switch_generator" in possibleActions:
-                    if fullturn == 1:
+                    if tutorial == True:
                         print(BLUE+" [1] Switch generator - 100c"+RESET)
                     else:
                         print(GREEN+" [1] Switch generator - 100c"+RESET)
@@ -774,14 +794,14 @@ while not game_won:
             print(CYAN+"--- Hand Crafting ---"+RESET)
             print()
 
-            if fullturn == 1:
+            if tutorial == True:
                 print()
                 print(BLUE+"-Tutorial-"+RESET)
                 print(BLUE+"Make a Switch."+RESET)
                 print()
 
             if "make_Switch" in possibleActions:
-                if fullturn == 1:
+                if tutorial == True:
                     print(BLUE+" [1] One Switch"+RESET)
                 else:
                     print(GREEN+" [1] One Switch"+RESET)
@@ -1059,7 +1079,7 @@ while not game_won:
     else:
         print(RED+"⚠Your generators are inactive so could not produce products this turn.⚠"+RESET)
 
-    if fullturn == 1:
+    if tutorial == True:
         print()
         print(BLUE+"-Tutorial-"+RESET)
         print(BLUE+"After a turn you can then sell your made products to waiting customers."+RESET)
@@ -1088,7 +1108,7 @@ while not game_won:
 
     print(DEFAULT+"Customers in shop:"+RESET)
     for i, customer in enumerate(customers):
-        if fullturn == 1:
+        if tutorial == True:
             row_color = BLUE if i % 2 == 0 else CYAN
         else:
             row_color = DEFAULT if i % 2 == 0 else CYAN
@@ -1213,7 +1233,7 @@ while not game_won:
                 print()
                 print(DEFAULT+"Updated customers:"+RESET)
                 for i, customer in enumerate(customers):
-                    if fullturn == 1:
+                    if tutorial == True:
                         row_color = BLUE if i % 2 == 0 else CYAN
                     else:
                         row_color = DEFAULT if i % 2 == 0 else CYAN
@@ -1238,7 +1258,7 @@ while not game_won:
     time.sleep(2)
     print()
     print()
-    if fullturn == 1:
+    if tutorial == True:
         print(BLUE+"-Tutorial-"+RESET)
         print(BLUE+"After a turn you will receive a summary of that turn!"+RESET)
         print()
@@ -1313,7 +1333,7 @@ while not game_won:
 
             active_event = None
     
-    if fullturn == 1:
+    if tutorial == True:
         print()
         print(BLUE+"-Tutorial-"+RESET)
         print(BLUE+"Well, I think thats about it. You know all you need to know."+RESET)
