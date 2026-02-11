@@ -216,6 +216,9 @@ def createCustomer(force_type=None):
 
     name = getCustomerName(customer_type)
 
+    if fullturn == 0:
+        patience += 1
+
 
     return{
         "name": name,
@@ -400,13 +403,6 @@ def applyAwardBuff(tier):
 
 
 
-
-#other vars
-
-customers = [createCustomer("normal"), createCustomer("normal")]
-
-
-
 #---------------------------------------start game loop--------------------------------------------------
 
 print()
@@ -432,10 +428,13 @@ if tutorial == True:
     print()
     print(BLUE+"-Tutorial active-"+RESET)
     print()
+    customers = [createCustomer("normal"), createCustomer("normal")]
 else:
     print()
     print(BLUE+"-Tutorial inactive-"+RESET)
     print()
+    customers = [createCustomer(), createCustomer()]
+
 print()
 print(CYAN+"-------------------------------------------------------"+RESET)
 time.sleep(1)
@@ -466,7 +465,7 @@ while not game_won:
             customers.remove(customer)
     
         # roll 'dice' for new event ONLY if no events are already active
-    if active_event is None and fullturn > 1:
+    if active_event is None and not tutorial == True:
         roll = random.randint(1, 20)
 
         if roll == 1:
@@ -505,14 +504,14 @@ while not game_won:
 
         print()
 
-    if fullturn % 3 == 1 and not fullturn == 1:
+    if fullturn % 3 == 1:
         Switch_price = Switch_price + random.randint(-10,10)
         Xbox_price = Xbox_price + random.randint(-10,10)
         Playstation_price = Playstation_price + random.randint(-10,10)
         Switch_price = round(Switch_price / 5) * 5
         Xbox_price = round(Xbox_price / 5) * 5
         Playstation_price = round(Playstation_price / 5) * 5
-        if not customers_this_turn == 10:
+        if not customers_this_turn == 10 and not fullturn == 1:
             customers_this_turn = customers_this_turn + 1
 
         Switch_price = clampPrice(Switch_price, Switch_min, Switch_max)
@@ -1334,6 +1333,7 @@ while not game_won:
             active_event = None
     
     if tutorial == True:
+        tutorial = False
         print()
         print(BLUE+"-Tutorial-"+RESET)
         print(BLUE+"Well, I think thats about it. You know all you need to know."+RESET)
