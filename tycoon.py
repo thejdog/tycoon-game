@@ -417,6 +417,8 @@ print(BLUE+"Welcome to my tycoon game!"+RESET)
 print(BLUE+"I'll be teaching you how to play for your first turn!"+RESET)
 print(BLUE+"Now, without further ado lets get going! :)"+RESET)
 print()
+print(CYAN+"-------------------------------------------------------"+RESET)
+time.sleep(3)
 
 while not game_won:
     #before turn setup:
@@ -468,6 +470,7 @@ while not game_won:
     orig_Xboxes = Xbox
     orig_Playstations = Playstation
     orig_money = money
+    time.sleep(3)
 
     #-------------maintenenance & generator related stuff--------------
 
@@ -475,9 +478,11 @@ while not game_won:
         print()
         if generators_active:
             print(YELLOW+"⚠ Maintenance is due tomorrow. Make sure you have enough money! ⚠"+RESET)
+            time.sleep(1)
             
         else:
             print(RED+"⚠ Maintenance is due tomorrow, and your generators are already offline! ⚠"+RESET)
+            time.sleep(1)
 
     print()
 
@@ -509,6 +514,7 @@ while not game_won:
             generators_active = True
             print(GREEN+"You managed to pay overdue maintenance!")
             print("Generators are back online."+RESET)
+            time.sleep(1)
 
     if fullturn % 3 == 0:
         base_maintenance = (
@@ -523,17 +529,20 @@ while not game_won:
         print()
         print(YELLOW+"Maintenance day!"+RESET)
         print(YELLOW+"Cost of maintenance: ", maintenance, "c."+RESET)
+        time.sleep(1)
 
         if money >= maintenance:
             money -= maintenance
             generators_active = True
             print(GREEN+"Maintenance paid. Generators operational"+RESET)
+            time.sleep(3)
         
         else:
             generators_active = False
             print(RED+"⚠You cannot afford to pay the maintenance fee!⚠"+RESET)
             print(RED+"⚠Generators will shut down until the payment is made.⚠"+RESET)
             print()
+            time.sleep(3)
 
     #----------------------before turn stuff------------------------
 
@@ -595,7 +604,7 @@ while not game_won:
 
           
 
-    time.sleep(2)
+    time.sleep(5)
     print()
     print(CYAN+"----------------------turn", fullturn, "begin-----------------------"+RESET)
     print()
@@ -603,7 +612,7 @@ while not game_won:
 
     while subturn <= 3:
 
-        time.sleep(1)
+        time.sleep(2)
         print()
         print(CYAN+"----------------------subturn ", subturn, "------------------------"+RESET)
         print()
@@ -1115,6 +1124,7 @@ while not game_won:
                 break
             if not 0 <= choice < len(customers):
                 print(RED+"Invalid customer number."+RESET)
+                time.sleep(1)
                 continue
             
             customer = customers[choice]
@@ -1125,6 +1135,7 @@ while not game_won:
             if want == "Switch":
                 if Switch < amount:
                     print(RED+"You don't have enough Switches!"+RESET)
+                    time.sleep(1)
                     continue
                 base_price = Switch_price
                 Switch -= amount
@@ -1132,6 +1143,7 @@ while not game_won:
             elif want == "Xbox":
                 if Xbox < amount:
                     print(RED+"You don't have enough Xboxes!"+RESET)
+                    time.sleep(1)
                     continue
                 base_price = Xbox_price
                 Xbox -= amount
@@ -1139,6 +1151,7 @@ while not game_won:
             elif want == "Playstation":
                 if Playstation < amount:
                     print(RED+"You don't have enough Playstations!"+RESET)
+                    time.sleep(1)
                     continue
                 base_price = Playstation_price
                 Playstation -= amount
@@ -1190,6 +1203,7 @@ while not game_won:
                 customer['name'], "(" + customer['type'] + ") for",
                 total_price, "c."+RESET
             )
+            time.sleep(1)
 
 
             customers.pop(choice)
