@@ -342,12 +342,12 @@ def canClaimGoal():
     )
 
 def canClaimBronze():
-    if money >= 400 and reputation >= 50 and vip_served >= 1 and non_vip_served >= 5:
+    if money >= 300 and reputation >= 50 and vip_served >= 1 and non_vip_served >= 5:
 
         return True
 
 def canClaimSilver():
-    if money >= 900 and reputation >= 65 and vip_served >= 2 and staff >= 1 and non_vip_served >= 10:
+    if money >= 800 and reputation >= 65 and vip_served >= 2 and staff >= 1 and non_vip_served >= 10:
         return True
 
 def canClaimGold():
