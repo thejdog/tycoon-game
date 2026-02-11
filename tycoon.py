@@ -475,7 +475,6 @@ while not game_won:
     #-------------maintenenance & generator related stuff--------------
 
     if fullturn % 3 == 2:
-        print()
         if generators_active:
             print(YELLOW+"⚠ Maintenance is due tomorrow. Make sure you have enough money! ⚠"+RESET)
             time.sleep(1)
@@ -484,7 +483,7 @@ while not game_won:
             print(RED+"⚠ Maintenance is due tomorrow, and your generators are already offline! ⚠"+RESET)
             time.sleep(1)
 
-    print()
+        print()
 
     if fullturn % 3 == 1 and not fullturn == 1:
         Switch_price = Switch_price + random.randint(-10,10)
